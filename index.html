@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
-<meta name="theme-color" content="#0d0b14" id="themeMeta">
+<meta name="theme-color" content="#0c0a12" id="themeMeta">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cocktails">
@@ -12,7 +12,7 @@
 <style>
   :root{
     --bg:#0c0a12; --bg2:#14111e; --card:#1b1727; --card2:#241f33; --card3:#2c2640;
-    --line:#322b45; --line2:#3d3556; --txt:#f4effb; --muted:#aaa0c6; --muted2:#7a7196;
+    --line:#322b45; --line2:#3d3556; --txt:#f4effb; --muted:#aaa0c6; --muted2:#968cb0;
     --accent:#ff5c8a; --accent-rgb:255,92,138; --accent2:#ffb86c; --accent2-rgb:255,184,108;
     --gold:#ffd479; --green:#5ad1a0; --green-rgb:90,209,160; --blue:#7aa2ff;
     --grad:linear-gradient(96deg,var(--accent),var(--accent2));
@@ -25,13 +25,15 @@
   }
   [data-theme="light"]{
     --bg:#f4f0fb; --bg2:#ffffff; --card:#ffffff; --card2:#f3eefb; --card3:#ece4fa;
-    --line:#e6dff2; --line2:#d8cdee; --txt:#1d1530; --muted:#665a82; --muted2:#9a8fb4;
-    --accent:#e0356b; --accent-rgb:224,53,107; --accent2:#dd7a1e; --accent2-rgb:221,122,30;
+    --line:#e6dff2; --line2:#d8cdee; --txt:#1d1530; --muted:#665a82; --muted2:#6e6390;
+    --accent:#d62e63; --accent-rgb:214,46,99; --accent2:#dd7a1e; --accent2-rgb:221,122,30;
     --gold:#bd8410; --green:#1f9c6e; --green-rgb:31,156,110; --blue:#4f6fd8;
     --shadow:0 18px 50px rgba(80,40,90,.18); --shadow-sm:0 6px 18px rgba(80,40,90,.12);
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   ::selection{background:rgba(var(--accent-rgb),.3)}
+  :focus-visible{outline:2.5px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .search input:focus-visible,.bar-search input:focus-visible{outline:none}
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -409,17 +411,17 @@
   </div>
 
   <div id="browseUI" class="view">
-    <div class="featured" id="featured"></div>
+    <div class="featured" id="featured" role="button" tabindex="0" aria-label="Cocktail des Tages öffnen"></div>
     <div class="toolbar">
       <label>Sortieren</label>
-      <div class="selwrap"><select id="sort">
+      <div class="selwrap"><select id="sort" aria-label="Cocktails sortieren">
         <option value="rank">Beliebtheit (Rang)</option>
         <option value="name">Name A–Z</option>
         <option value="ingredients">Wenigste Zutaten</option>
         <option value="volume">Volumen</option>
       </select></div>
       <label>Zutat</label>
-      <div class="selwrap"><select id="ingFilter"><option value="">Alle Zutaten</option></select></div>
+      <div class="selwrap"><select id="ingFilter" aria-label="Nach Zutat filtern"><option value="">Alle Zutaten</option></select></div>
       <label class="chk"><input type="checkbox" id="alcFree"> Alkoholfrei</label>
       <div class="spacer"></div>
       <span class="count" id="count"></span>
@@ -450,7 +452,7 @@
 </nav>
 
 <button class="fab" id="fab" title="Nach oben" aria-label="Nach oben">↑</button>
-<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="overlay" id="overlay"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Cocktail-Rezept"></div></div>
 <div class="toast" id="toast"></div>
 <div id="printSheet"></div>
 <svg width="0" height="0"><defs>
@@ -13940,7 +13942,7 @@ function cardHTML(c,showMatch){
   const glass=(c.glassware||[])[0]||'';
   let badge=`<span class="rank">#${c.rank}</span>`;
   if(showMatch){const m=missingCount(c);badge=m===0?'<span class="matchbadge mb-full">✓ machbar</span>':`<span class="matchbadge mb-near">${m} fehlt${m>1?'en':''}</span>`;}
-  return `<div class="card" data-id="${c.id}">
+  return `<div class="card" data-id="${c.id}" role="button" tabindex="0" aria-label="${esc(c.name)} – Rezept öffnen">
     ${glassSVG(glass,'ghost')}
     <div class="top">${badge}<button class="fav ${fav?'on':''}" data-fav="${c.id}" aria-label="Favorit">${fav?'❤️':'🤍'}</button></div>
     <h3>${highlight(c.name,q)}</h3>
@@ -13961,8 +13963,9 @@ function render(){
 }
 
 // ---------- modal ----------
-function openModal(id){currentId=id;scale=1;renderModal();$('#overlay').classList.add('show');document.body.style.overflow='hidden';}
-function closeModal(){$('#overlay').classList.remove('show');document.body.style.overflow='';currentId=null;}
+let lastFocus=null;
+function openModal(id){if(!currentId)lastFocus=document.activeElement;currentId=id;scale=1;renderModal();$('#overlay').classList.add('show');document.body.style.overflow='hidden';setTimeout(()=>{const b=$('#modal').querySelector('.mclose');if(b)b.focus();},60);}
+function closeModal(){if(!currentId)return;$('#overlay').classList.remove('show');document.body.style.overflow='';currentId=null;if(lastFocus&&lastFocus.focus){try{lastFocus.focus();}catch(e){}lastFocus=null;}}
 function renderModal(){
   const c=BYID[currentId];if(!c)return;const fav=LS.fav.includes(c.id);
   const ingRows=c.ingredients.map(i=>{
@@ -13981,7 +13984,7 @@ function renderModal(){
   const warn=(c.warnings&&c.warnings.length)?`<div class="warn">⚠️ ${esc(c.warnings.join(' '))}</div>`:'';
   const note=c.recipe_note?`<div class="note">💡 ${esc(c.recipe_note)}</div>`:'';
   const rel=COCKTAILS.filter(x=>x.category===c.category&&x.id!==c.id).sort((a,b)=>a.rank-b.rank).slice(0,6);
-  const relHTML=rel.length?`<div class="sec-title">🔗 Ähnliche Cocktails</div><div class="related">${rel.map(r=>`<div class="relcard" data-id="${r.id}"><div class="rg">${cocktailGlass(r)}</div><h4>${esc(r.name)}</h4><span>#${r.rank} · ${esc(r.category)}</span></div>`).join('')}</div>`:'';
+  const relHTML=rel.length?`<div class="sec-title">🔗 Ähnliche Cocktails</div><div class="related">${rel.map(r=>`<div class="relcard" data-id="${r.id}" role="button" tabindex="0" aria-label="${esc(r.name)}"><div class="rg">${cocktailGlass(r)}</div><h4>${esc(r.name)}</h4><span>#${r.rank} · ${esc(r.category)}</span></div>`).join('')}</div>`:'';
   $('#modal').innerHTML=`
     <button class="mclose" onclick="closeModal()" aria-label="Schließen">✕</button>
     <div class="mhead"><div class="hglow"></div>${cocktailGlass(c,'mglass')}
@@ -14009,6 +14012,7 @@ function renderModal(){
         <button class="btn" onclick="printRecipe('${c.id}')">🖨 Drucken</button>
       </div>
     </div>`;
+  $('#modal').setAttribute('aria-label',c.name+' – Rezept');
   $('#modal').scrollTop=0;
 }
 function setScale(d){scale=Math.max(1,Math.min(12,scale+d));renderModal();
@@ -14134,6 +14138,9 @@ function navModal(dir){if(!currentId)return;const i=RANKED.findIndex(c=>c.id===c
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape')closeModal();
   if(currentId){if(e.key==='ArrowLeft')navModal(-1);if(e.key==='ArrowRight')navModal(1);}
+  if(e.key==='Enter'||e.key===' '){const el=document.activeElement;
+    if(el&&el.matches&&el.matches('.card,.relcard')){e.preventDefault();openModal(el.dataset.id);}
+    else if(el&&el.id==='featured'&&!currentId){e.preventDefault();openModal(featuredId);}}
   if(e.key==='/'&&document.activeElement!==$('#q')){e.preventDefault();$('#q').focus();}});
 // swipe-down to close sheet (mobile)
 let touchY=null;
