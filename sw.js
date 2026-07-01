@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mixology-v9';
+const CACHE_NAME = 'mixology-v10';
 const ASSETS = [
   'index.html',
   'styles.css',
@@ -39,34 +39,29 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Cache first, fall back to network fetch
+// Stale-while-revalidate: serve the cached response immediately for speed,
+// but always refetch in the background and update the cache. A pure
+// cache-first strategy (the previous behavior) meant a shipped fix would
+// never reach an already-installed device unless CACHE_NAME happened to be
+// bumped — this makes staleness self-heal on the *next* load instead.
 self.addEventListener('fetch', (event) => {
   // Only cache GET requests
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(event.request)
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.match(event.request).then((cachedResponse) => {
+        const networkFetch = fetch(event.request)
           .then((networkResponse) => {
-            // Check if valid response received
-            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-              return networkResponse;
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+              cache.put(event.request, networkResponse.clone());
             }
-
-            // Clone and cache the new resource
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
             return networkResponse;
-          });
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || networkFetch;
       })
+    )
   );
 });

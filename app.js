@@ -264,6 +264,18 @@ function getIngredientColor(name) {
    PWA SERVICE WORKER REGISTRATION
    ---------------------------------------------------- */
 if ('serviceWorker' in navigator) {
+  // Without this, a new service worker version can sit "waiting" indefinitely
+  // on an already-installed device — the user never actually sees a shipped
+  // fix until they manually delete and reinstall the home-screen app.
+  // controllerchange fires exactly once when a new worker takes control
+  // (skipWaiting + clients.claim in sw.js), so reload once to pick it up.
+  let refreshingAfterUpdate = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshingAfterUpdate) return;
+    refreshingAfterUpdate = true;
+    window.location.reload();
+  });
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js')
       .then(reg => console.log('ServiceWorker registered successfully.', reg.scope))
