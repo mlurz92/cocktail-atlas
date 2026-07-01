@@ -1162,17 +1162,20 @@ function getGarnishSVG(cocktail, spec) {
     // 2. Cherry (Kirsche)
     else if (name.includes("kirsche") || name.includes("cherry")) {
       garnishHtml += `
-        <!-- Luxury Cocktail Cherry perched on the rim -->
+        <!-- Luxury Cocktail Cherry perched on the rim with stem leaf -->
         <g transform="translate(${spec.rimRight + 4}, ${spec.rimY - 4})">
+          <!-- Drop Shadow -->
+          <circle cx="1" cy="2" r="8" fill="rgba(0,0,0,0.25)"/>
           <!-- Stem -->
           <path d="M 0 0 Q -8 -22 -20 -13" fill="none" stroke="#4a3b32" stroke-width="1.8" stroke-linecap="round"/>
-          <!-- Shadow -->
-          <circle cx="0" cy="0" r="8" fill="rgba(0,0,0,0.15)" transform="translate(1, 1)"/>
+          <path d="M 0 0 Q -8 -22 -20 -13" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.7" stroke-linecap="round" stroke-dasharray="2 4"/>
+          <!-- Little green leaf on stem -->
+          <path d="M -8 -15 Q -14 -22 -10 -25 Q -6 -20 -8 -15" fill="#31572c" stroke="#132a13" stroke-width="0.5" />
           <!-- Cherry Body -->
           <circle cx="0" cy="0" r="8" fill="url(#cherry-grad)"/>
           <!-- 3D Gloss Highlight -->
-          <circle cx="-2.5" cy="-2.5" r="2.2" fill="#ffffff" opacity="0.75" />
-          <circle cx="2" cy="2" r="1" fill="#ffffff" opacity="0.25" />
+          <circle cx="-2.5" cy="-2.5" r="2.2" fill="#ffffff" opacity="0.85" />
+          <circle cx="2" cy="2" r="1" fill="#ffffff" opacity="0.3" />
         </g>
       `;
     }
@@ -1194,27 +1197,42 @@ function getGarnishSVG(cocktail, spec) {
       const oy2 = y1 + dy * 0.65;
 
       garnishHtml += `
-        <!-- Olives on a premium metal pick -->
+        <!-- Olives on a premium metal pick with linear volume gradient -->
         <g>
+          <defs>
+            <linearGradient id="olive-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a3b18a"/>
+              <stop offset="60%" stop-color="#588157"/>
+              <stop offset="100%" stop-color="#3a5a40"/>
+            </linearGradient>
+          </defs>
           <!-- Pick Needle -->
           <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#c5a059" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#fff" stroke-width="0.6" stroke-linecap="round" opacity="0.4"/>
           <!-- Pick Decorative Top Ring -->
           <circle cx="${x1 - 1.5}" cy="${y1 - 1.5}" r="3.5" fill="none" stroke="#c5a059" stroke-width="1.5"/>
+          <circle cx="${x1 - 1.5}" cy="${y1 - 1.5}" r="1.5" fill="#c5a059" />
           
           <!-- Olive 1 (with red stuffed pimento) -->
           <g transform="rotate(35, ${ox1}, ${oy1})">
-            <ellipse cx="${ox1}" cy="${oy1}" rx="7.5" ry="10" fill="#6b705c" stroke="#555a42" stroke-width="0.5"/>
+            <!-- Shadow -->
+            <ellipse cx="${ox1 + 1}" cy="${oy1 + 1}" rx="7.5" ry="10" fill="rgba(0,0,0,0.2)"/>
+            <ellipse cx="${ox1}" cy="${oy1}" rx="7.5" ry="10" fill="url(#olive-grad)" stroke="#3a5a40" stroke-width="0.8"/>
             <!-- Stuffed Pimento front core -->
             <ellipse cx="${ox1}" cy="${oy1 - 6}" rx="2.5" ry="1.8" fill="#bc4749"/>
+            <circle cx="${ox1 - 0.5}" cy="${oy1 - 6.5}" r="0.8" fill="#ff8a8a" opacity="0.8"/>
             <!-- Highlight -->
-            <ellipse cx="${ox1 - 2.5}" cy="${oy1}" rx="1.5" ry="3" fill="#ffffff" opacity="0.3"/>
+            <ellipse cx="${ox1 - 2.5}" cy="${oy1}" rx="1.5" ry="3" fill="#ffffff" opacity="0.35"/>
           </g>
           
           <!-- Olive 2 (with red stuffed pimento) -->
           <g transform="rotate(35, ${ox2}, ${oy2})">
-            <ellipse cx="${ox2}" cy="${oy2}" rx="7.5" ry="10" fill="#6b705c" stroke="#555a42" stroke-width="0.5"/>
+            <!-- Shadow -->
+            <ellipse cx="${ox2 + 1}" cy="${oy2 + 1}" rx="7.5" ry="10" fill="rgba(0,0,0,0.2)"/>
+            <ellipse cx="${ox2}" cy="${oy2}" rx="7.5" ry="10" fill="url(#olive-grad)" stroke="#3a5a40" stroke-width="0.8"/>
             <ellipse cx="${ox2}" cy="${oy2 - 6}" rx="2.5" ry="1.8" fill="#bc4749"/>
-            <ellipse cx="${ox2 - 2.5}" cy="${oy2}" rx="1.5" ry="3" fill="#ffffff" opacity="0.3"/>
+            <circle cx="${ox2 - 0.5}" cy="${oy2 - 6.5}" r="0.8" fill="#ff8a8a" opacity="0.8"/>
+            <ellipse cx="${ox2 - 2.5}" cy="${oy2}" rx="1.5" ry="3" fill="#ffffff" opacity="0.35"/>
           </g>
         </g>
       `;
@@ -1223,27 +1241,38 @@ function getGarnishSVG(cocktail, spec) {
     // 4. Mint sprig (Minze / Basilikum)
     else if (name.includes("minz") || name.includes("basil") || name.includes("minzezweig") || name.includes("minzeblatt")) {
       const isBasil = name.includes("basil");
-      const leafColor1 = isBasil ? '#4f772d' : '#31572c';
-      const leafColor2 = isBasil ? '#90a955' : '#4f772d';
+      const leafColor1 = isBasil ? '#4f772d' : '#2b4c2a';
+      const leafColor2 = isBasil ? '#90a955' : '#3e6b3c';
       const strokeColor = '#132a13';
       
       garnishHtml += `
-        <!-- High-fidelity Mint Bouquet on rim -->
+        <!-- High-fidelity Mint Bouquet on rim with drop shadows and detailed veins -->
         <g transform="translate(${spec.rimLeft + 12}, ${spec.rimY - 8})">
+          <!-- Bouquet Drop Shadow -->
+          <path d="M -22 8 C -12 18, 12 18, 22 8 Q 0 0 -22 8" fill="rgba(0,0,0,0.18)" />
+          
           <!-- Leaf 1 (Left, angled down) -->
           <g transform="rotate(-30, 0, 0)">
-            <path d="M 0 0 C -12 -8, -20 -4, -24 6 C -18 14, -8 10, 0 0 Z" fill="${leafColor1}" stroke="${strokeColor}" stroke-width="0.8"/>
-            <path d="M 0 0 Q -12 1 -24 6" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+            <path d="M 0 0 C -12 -8, -22 -4, -26 6 C -20 14, -8 10, 0 0 Z" fill="${leafColor1}" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M 0 0 Q -12 1 -26 6" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+            <!-- Veins -->
+            <path d="M -8 1 Q -12 -2 -14 -4 M -14 3 Q -18 1 -20 -1 M -6 2 Q -8 5 -8 7" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
           </g>
           <!-- Leaf 2 (Right, angled up) -->
           <g transform="rotate(40, 0, 0)">
-            <path d="M 0 0 C 12 -8, 20 -4, 24 6 C 18 14, 8 10, 0 0 Z" fill="${leafColor2}" stroke="${strokeColor}" stroke-width="0.8"/>
-            <path d="M 0 0 Q 12 1 24 6" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+            <path d="M 0 0 C 12 -8, 22 -4, 26 6 C 18 14, 8 10, 0 0 Z" fill="${leafColor2}" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M 0 0 Q 12 1 26 6" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+            <!-- Veins -->
+            <path d="M 8 1 Q 12 -2 14 -4 M 14 3 Q 18 1 20 -1" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
           </g>
           <!-- Leaf 3 (Center vertical, smaller) -->
           <g transform="rotate(5, 0, 0)">
-            <path d="M 0 0 C -6 -12, -4 -20, 4 -24 C 10 -18, 8 -8, 0 0 Z" fill="#90a955" stroke="${strokeColor}" stroke-width="0.8"/>
-            <path d="M 0 0 Q 1 -12 4 -24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+            <path d="M 0 0 C -6 -12, -4 -22, 4 -26 C 10 -20, 8 -8, 0 0 Z" fill="#7ba05b" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M 0 0 Q 1 -14 4 -26" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          </g>
+          <!-- Small secondary leaf in front -->
+          <g transform="rotate(-10, 0, 0) scale(0.6)">
+            <path d="M 0 0 C -6 -10, 6 -16, 10 -6 C 8 4, -4 4, 0 0 Z" fill="#9bc181" stroke="${strokeColor}" stroke-width="0.6"/>
           </g>
         </g>
       `;
