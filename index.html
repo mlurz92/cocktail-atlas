@@ -108,6 +108,10 @@
         <!-- Cocktail of the day (Hero Card) -->
         <div class="hero-card" id="cocktail-of-the-day-card">
           <div class="hero-card-badge">Cocktail des Tages</div>
+          <!-- Subtle refresh button: top-right corner of hero card -->
+          <button id="hero-refresh-btn" class="hero-refresh-btn" aria-label="Neuen Cocktail des Tages wählen" title="Anderen Drink anzeigen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          </button>
           <div class="hero-card-content">
             <div class="hero-card-text">
               <h3 id="hero-cocktail-name" class="cinzel-title">Loading...</h3>
@@ -144,20 +148,6 @@
           </div>
         </div>
 
-        <!-- Mixology Roulette Card -->
-        <div class="section-container">
-          <div class="roulette-card" id="roulette-trigger-card">
-            <div class="roulette-glow"></div>
-            <div class="roulette-card-body">
-              <div class="roulette-icon-box">🎲</div>
-              <div class="roulette-info">
-                <h3 class="cinzel-title">Mixology Roulette</h3>
-                <p>Lass das Schicksal entscheiden. Finde einen zufälligen Cocktail aus unserer erlesenen Sammlung.</p>
-              </div>
-              <button class="roulette-btn" id="roulette-btn">Drink shaken</button>
-            </div>
-          </div>
-        </div>
 
         <!-- Master List header and listing -->
         <div class="section-container">
@@ -300,7 +290,18 @@
     <div class="drawer-sheet">
       <!-- Drag handle for mobile gesture feeling -->
       <div class="drawer-handle"></div>
-      <button id="drawer-close-btn" class="drawer-close" aria-label="Schließen">&times;</button>
+      
+      <!-- Header action buttons: Favorite (left) and Share (right) + Close -->
+      <div class="drawer-header-actions">
+        <button id="detail-fav-btn" class="drawer-icon-btn fav-btn" aria-label="Favorisieren">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        </button>
+        <div class="drawer-header-spacer"></div>
+        <button id="detail-share-btn" class="drawer-icon-btn" aria-label="Teilen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+        </button>
+        <button id="drawer-close-btn" class="drawer-close" aria-label="Schließen">&times;</button>
+      </div>
       
       <!-- Welcome Empty State Placeholder for Desktop -->
       <div id="detail-placeholder" class="detail-empty-state">
@@ -342,18 +343,6 @@
               <span class="spec-value" id="detail-spec-method">Shaken</span>
               <span class="spec-label">Methode</span>
             </div>
-          </div>
-
-          <!-- Actions: Favorite and Share -->
-          <div class="drawer-actions">
-            <button id="detail-fav-btn" class="action-btn-outline fav-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-              <span class="btn-text">Favorisieren</span>
-            </button>
-            <button id="detail-share-btn" class="action-btn-outline">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
-              <span>Teilen</span>
-            </button>
           </div>
 
           <!-- Recipe Notes (warnings or comments) -->

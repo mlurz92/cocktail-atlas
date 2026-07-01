@@ -451,25 +451,31 @@ function setDailyCocktail() {
   }
   const index = seed % state.cocktails.length;
   const dailyCocktail = state.cocktails[index];
+  if (dailyCocktail) renderHeroCard(dailyCocktail);
+}
+
+/* Render the hero card with any given cocktail (used by setDailyCocktail & refresh btn) */
+function renderHeroCard(cocktail) {
+  if (!cocktail) return;
+  const heroName = document.getElementById('hero-cocktail-name');
+  const heroCat = document.getElementById('hero-cocktail-category');
+  const heroVol = document.getElementById('hero-cocktail-volume');
+  const heroGlass = document.getElementById('hero-cocktail-glass');
+  const heroVisual = document.getElementById('hero-cocktail-visual');
+  const heroCard = document.getElementById('cocktail-of-the-day-card');
   
-  if (dailyCocktail) {
-    const heroName = document.getElementById('hero-cocktail-name');
-    const heroCat = document.getElementById('hero-cocktail-category');
-    const heroVol = document.getElementById('hero-cocktail-volume');
-    const heroGlass = document.getElementById('hero-cocktail-glass');
-    const heroVisual = document.getElementById('hero-cocktail-visual');
-    const heroCard = document.getElementById('cocktail-of-the-day-card');
-    
-    if (heroName) heroName.textContent = dailyCocktail.name;
-    if (heroCat) heroCat.textContent = dailyCocktail.category;
-    if (heroVol) heroVol.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> ${dailyCocktail.total_volume.approx_ml} ml`;
-    if (heroGlass) heroGlass.textContent = dailyCocktail.glassware[0] || 'Coupeglas';
-    if (heroVisual) heroVisual.innerHTML = getMinimalSVG(dailyCocktail);
-    if (heroCard) {
-      heroCard.onclick = () => window.location.hash = `#cocktail-${dailyCocktail.id}`;
-    }
+  if (heroName) heroName.textContent = cocktail.name;
+  if (heroCat) heroCat.textContent = cocktail.category;
+  if (heroVol) heroVol.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> ${cocktail.total_volume.approx_ml} ml`;
+  if (heroGlass) heroGlass.textContent = cocktail.glassware[0] || 'Coupeglas';
+  if (heroVisual) heroVisual.innerHTML = getMinimalSVG(cocktail);
+  if (heroCard) {
+    // Store the current hero cocktail for click handler
+    heroCard.onclick = () => window.location.hash = `#cocktail-${cocktail.id}`;
   }
 }
+
+
 
 function filterByCategory(category) {
   state.activeFilter = 'all';
@@ -865,16 +871,16 @@ function showCocktailDetail(cocktail) {
   document.getElementById('detail-spec-glass').textContent = cocktail.glassware[0] || 'Coupeglas';
   document.getElementById('detail-spec-method').textContent = cocktail.method_tags[0] === 'shake' ? 'Shaken' : cocktail.method_tags[0] === 'stir' ? 'Gerührt' : 'Im Glas';
   
-  // Favorite state sync
+  // Favorite state sync — icon button, no text label
   const favBtn = document.getElementById('detail-fav-btn');
   if (favBtn) {
     const isFav = state.favorites.includes(cocktail.id);
     if (isFav) {
       favBtn.classList.add('active');
-      favBtn.querySelector('.btn-text').textContent = 'Favorisiert';
+      favBtn.title = 'Aus Favoriten entfernen';
     } else {
       favBtn.classList.remove('active');
-      favBtn.querySelector('.btn-text').textContent = 'Favorisieren';
+      favBtn.title = 'Zu Favoriten hinzufügen';
     }
   }
 
@@ -952,12 +958,16 @@ function toggleFavoriteDetail() {
   
   if (idx > -1) {
     state.favorites.splice(idx, 1);
-    favBtn.classList.remove('active');
-    favBtn.querySelector('.btn-text').textContent = 'Favorisieren';
+    if (favBtn) {
+      favBtn.classList.remove('active');
+      favBtn.title = 'Zu Favoriten hinzufügen';
+    }
   } else {
     state.favorites.push(id);
-    favBtn.classList.add('active');
-    favBtn.querySelector('.btn-text').textContent = 'Favorisiert';
+    if (favBtn) {
+      favBtn.classList.add('active');
+      favBtn.title = 'Aus Favoriten entfernen';
+    }
   }
   localStorage.setItem('mixology_favorites', JSON.stringify(state.favorites));
   renderFavorites();
@@ -1109,27 +1119,45 @@ function getGarnishSVG(cocktail, spec) {
       const isOrange = name.includes("orange");
       
       const outerColor = isLime ? '#2d6a4f' : isOrange ? '#e76f51' : '#f9844a';
+      const pithColor = isLime ? '#2d5a3d' : isOrange ? '#c1440e' : '#d4621a';
       const citrusColor = isLime ? '#52b788' : isOrange ? '#f4a261' : '#f9c74f';
+      const segmentStroke = isLime ? 'rgba(20,60,30,0.25)' : isOrange ? 'rgba(160,60,20,0.2)' : 'rgba(180,100,20,0.2)';
       
       let wedgesHtml = '';
       for (let i = 0; i < 8; i++) {
         const rot = i * 45;
+        // Each segment as a filled pie wedge
         wedgesHtml += `<path d="M 0 0 L 13.5 -1.2 A 14 14 0 0 0 10.4 -8.8 Z" fill="${citrusColor}" transform="rotate(${rot})" opacity="0.95"/>`;
+        // Segment divider line (vein)
+        wedgesHtml += `<line x1="0" y1="0" x2="0" y2="-14" stroke="${segmentStroke}" stroke-width="0.7" transform="rotate(${rot})"/>`;
       }
 
       garnishHtml += `
-        <!-- Citrus wheel on rim with 3D segment detail -->
+        <!-- Citrus wheel on rim with 3D segment detail and shadow -->
         <g transform="translate(${spec.rimRight - 10}, ${spec.rimY - 12}) rotate(25)">
+          <!-- Drop shadow -->
+          <circle cx="2" cy="2" r="19" fill="rgba(0,0,0,0.2)" />
+          <!-- Outer rind ring -->
           <circle cx="0" cy="0" r="19" fill="${outerColor}" />
-          <circle cx="0" cy="0" r="17.5" fill="rgba(255, 255, 255, 0.95)" />
+          <!-- Pith ring -->
+          <circle cx="0" cy="0" r="17.5" fill="rgba(255, 255, 255, 0.9)" />
+          <!-- Pith inner edge -->
+          <circle cx="0" cy="0" r="16" fill="${pithColor}" opacity="0.15"/>
+          <!-- Flesh -->
           <circle cx="0" cy="0" r="15.5" fill="${citrusColor}" />
+          <!-- Segment wedges -->
           ${wedgesHtml}
-          <!-- Rind slice cutout to look perched on the glass -->
-          <rect x="-1" y="10" width="2" height="10" fill="rgba(255,255,255,0.8)" transform="rotate(-25)"/>
-          <circle cx="0" cy="0" r="2.5" fill="rgba(255, 255, 255, 0.95)" />
+          <!-- Center pip -->
+          <circle cx="0" cy="0" r="2.8" fill="rgba(255, 255, 255, 0.9)" />
+          <circle cx="0" cy="0" r="1.2" fill="${outerColor}" opacity="0.6" />
+          <!-- Rind notch (perching slot) -->
+          <rect x="-1.2" y="12" width="2.4" height="8" fill="rgba(255,255,255,0.85)" transform="rotate(-25)"/>
+          <!-- Glass-side highlight -->
+          <path d="M -13 -8 Q -18 0 -13 8" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
         </g>
       `;
     }
+
     
     // 2. Cherry (Kirsche)
     else if (name.includes("kirsche") || name.includes("cherry")) {
@@ -1457,6 +1485,58 @@ function drawGlasswareSVG(cocktail) {
     highlightHtml = `<path d="${spec.highlight}" fill="rgba(255, 255, 255, 0.12)" pointer-events="none" />`;
   }
 
+  // --- NEW: Liquid surface meniscus line (top of liquid, realistic glimmer) ---
+  let surfaceHtml = '';
+  if (totalVolume > 0) {
+    const surfaceY = spec.yMax - (spec.yMax - spec.yMin) * 0.85;
+    const surfaceLeft = spec.rimLeft + (spec.rimRight - spec.rimLeft) * 0.1;
+    const surfaceRight = spec.rimLeft + (spec.rimRight - spec.rimLeft) * 0.9;
+    const liquidColor = getIngredientColor(liquids[0]?.name || '');
+    const surfaceHighlight = `rgba(255, 255, 255, 0.55)`;
+    surfaceHtml = `
+      <!-- Liquid surface meniscus highlight -->
+      <line x1="${surfaceLeft}" y1="${surfaceY}" x2="${surfaceRight}" y2="${surfaceY}"
+            stroke="${surfaceHighlight}" stroke-width="1.8" stroke-linecap="round" opacity="0.7" />
+      <!-- Surface shimmer arc (center brighter) -->
+      <path d="M ${surfaceLeft + 8} ${surfaceY} Q 100 ${surfaceY - 3} ${surfaceRight - 8} ${surfaceY}"
+            fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-linecap="round" />
+    `;
+  }
+
+  // --- NEW: Condensation drops on the outside of ice-based glasses ---
+  let condensationHtml = '';
+  const hasIceForCondensation = ['Rocks-Glas', 'Highball-Glas', 'Collins-Glas', 'Kupferbecher'].includes(glassName);
+  if (hasIceForCondensation && totalVolume > 0) {
+    // Place tiny water droplets along the glass exterior at varying heights
+    const dropPositions = [
+      { x: spec.rimLeft - 3, y: spec.rimY + 20, r: 2.2, op: 0.55 },
+      { x: spec.rimLeft - 5, y: spec.rimY + 40, r: 1.5, op: 0.4 },
+      { x: spec.rimLeft - 2, y: spec.rimY + 60, r: 1.8, op: 0.5 },
+      { x: spec.rimRight + 3, y: spec.rimY + 30, r: 1.6, op: 0.45 },
+      { x: spec.rimRight + 4, y: spec.rimY + 55, r: 2.0, op: 0.5 },
+      { x: spec.rimRight + 2, y: spec.rimY + 75, r: 1.3, op: 0.35 },
+      { x: spec.rimLeft - 4, y: spec.rimY + 85, r: 1.7, op: 0.45 },
+    ];
+    condensationHtml = `<!-- Condensation water drops on glass exterior -->` + dropPositions.map(d => `
+      <ellipse cx="${d.x}" cy="${d.y}" rx="${d.r * 0.7}" ry="${d.r}" 
+               fill="rgba(200, 230, 255, ${d.op})" />
+    `).join('');
+    // Add a vertical streak trail from two drops
+    condensationHtml += `
+      <path d="M ${spec.rimLeft - 3} ${spec.rimY + 22} Q ${spec.rimLeft - 5} ${spec.rimY + 50} ${spec.rimLeft - 4} ${spec.rimY + 68}"
+            fill="none" stroke="rgba(180, 210, 255, 0.25)" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M ${spec.rimRight + 3} ${spec.rimY + 32} Q ${spec.rimRight + 4} ${spec.rimY + 55} ${spec.rimRight + 3} ${spec.rimY + 72}"
+            fill="none" stroke="rgba(180, 210, 255, 0.2)" stroke-width="1" stroke-linecap="round"/>
+    `;
+  }
+
+  // --- NEW: Secondary inner glass refraction band ---
+  const innerRefractionHtml = `
+    <!-- Inner glass refraction — secondary slim highlight along left wall -->
+    <path d="M ${spec.rimLeft + 4} ${spec.rimY + 4} L ${spec.rimLeft + 6} ${spec.yMax - 6}"
+          fill="none" stroke="rgba(255, 255, 255, 0.18)" stroke-width="1.5" stroke-linecap="round" />
+  `;
+
   // 5. Assemble the whole SVG code
   const isTiki = spec.isTiki;
   const detailClipId = `detail-glass-clip-${cocktail.id}`;
@@ -1473,6 +1553,10 @@ function drawGlasswareSVG(cocktail) {
           <stop offset="40%" stop-color="#c1121f" />
           <stop offset="100%" stop-color="#780000" />
         </radialGradient>
+        <!-- Soft vignette drop shadow for depth -->
+        <filter id="glass-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.4)" flood-opacity="0.6"/>
+        </filter>
         ${gradientsDef}
       </defs>
 
@@ -1483,6 +1567,9 @@ function drawGlasswareSVG(cocktail) {
         
         <!-- Stacked ingredients liquid layers -->
         ${layersHtml}
+        
+        <!-- Liquid surface meniscus -->
+        ${surfaceHtml}
         
         <!-- Ice cubes inside liquid -->
         ${iceCubesHtml}
@@ -1499,12 +1586,18 @@ function drawGlasswareSVG(cocktail) {
       
       <!-- Custom glossy highlight paths -->
       ${highlightHtml}
+      
+      <!-- Inner refraction band (secondary glimmer) -->
+      ${innerRefractionHtml}
 
       <!-- Inner glass cavity stroke outline -->
-      <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.12)" stroke-width="2" />
+      <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" />
 
-      <!-- Glass outer structure (mug, handle, stem, base) -->
-      <path d="${spec.body}" fill="${spec.fill}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}" stroke-linejoin="round" />
+      <!-- Glass outer structure (mug, handle, stem, base) with drop shadow -->
+      <path d="${spec.body}" fill="${spec.fill}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}" stroke-linejoin="round" filter="url(/#glass-shadow)" />
+      
+      <!-- Condensation drops on exterior -->
+      ${condensationHtml}
   `;
 
   // Draw Tiki Face carvings if Tiki style
@@ -1531,7 +1624,7 @@ function drawGlasswareSVG(cocktail) {
   
   container.innerHTML = svgCode;
 
-  // 5. Trigger CSS liquid filling animation after short delay
+  // 6. Trigger CSS liquid filling animation after short delay
   setTimeout(() => {
     container.querySelectorAll('.liquid-layer').forEach(layer => {
       const targetY = layer.getAttribute('data-target-y');
@@ -1542,6 +1635,7 @@ function drawGlasswareSVG(cocktail) {
     });
   }, 60);
 }
+
 
 /* ----------------------------------------------------
    UI EVENT LISTENERS & SETUP
@@ -1653,10 +1747,30 @@ function setupUIEventListeners() {
     });
   }
 
-  // Randomizer - Mixology Roulette button click
-  const rouletteBtn = document.getElementById('roulette-btn');
-  if (rouletteBtn) {
-    rouletteBtn.addEventListener('click', triggerRandomCocktail);
+  // Randomizer - Mixology Roulette removed, hero refresh button added
+  const heroRefreshBtn = document.getElementById('hero-refresh-btn');
+  if (heroRefreshBtn) {
+    heroRefreshBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Don't open the hero card detail
+      // Pick a new random cocktail (not the same one if possible)
+      if (state.cocktails.length > 1) {
+        const currentHeroName = document.getElementById('hero-cocktail-name')?.textContent;
+        let tries = 0;
+        let pick;
+        do {
+          pick = state.cocktails[Math.floor(Math.random() * state.cocktails.length)];
+          tries++;
+        } while (pick.name === currentHeroName && tries < 20);
+        renderHeroCard(pick);
+      }
+      // Micro-animation: spin the refresh icon
+      heroRefreshBtn.style.transform = 'rotate(360deg)';
+      heroRefreshBtn.style.opacity = '1';
+      setTimeout(() => {
+        heroRefreshBtn.style.transform = '';
+        heroRefreshBtn.style.opacity = '';
+      }, 600);
+    });
   }
 }
 

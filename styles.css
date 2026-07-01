@@ -36,24 +36,26 @@
   --liquid-mask-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Theme 2: Light Mode - Sand Beige & Bronze */
+/* Theme 2: Light Mode - Warm Ivory & Deep Sienna — High Contrast Edition */
 .light-theme {
-  --bg-primary: #FAF7F2;
-  --bg-secondary: #F0E8DF;
-  --bg-tertiary: #E6DBD0;
-  --text-primary: #2B211A;
-  --text-secondary: #706256;
-  --border-color: rgba(176, 114, 67, 0.18);
-  --accent-color: #A0522D;
-  --accent-soft: rgba(160, 82, 45, 0.08);
-  --accent-soft-hover: rgba(160, 82, 45, 0.15);
-  --accent-gradient: linear-gradient(135deg, #8B4513 0%, #D2B48C 35%, #CD853F 65%, #A0522D 100%);
-  --shadow-color: rgba(43, 33, 26, 0.12);
-  --glass-bg: rgba(240, 232, 223, 0.8);
-  --glass-border: rgba(43, 33, 26, 0.07);
-  --danger-color: #DC2626;
-  --danger-soft: rgba(220, 38, 38, 0.08);
-  --liquid-mask-color: rgba(0, 0, 0, 0.1);
+  --bg-primary: #F5EFE6;
+  --bg-secondary: #E8DDD1;
+  --bg-tertiary: #D9CBBF;
+  --text-primary: #1A110A;
+  --text-secondary: #5C4033;
+  --border-color: rgba(120, 70, 30, 0.28);
+  --accent-color: #8B3A12;
+  --accent-soft: rgba(139, 58, 18, 0.12);
+  --accent-soft-hover: rgba(139, 58, 18, 0.22);
+  --accent-gradient: linear-gradient(135deg, #6B2800 0%, #C47A3A 35%, #A0510D 65%, #7A2E00 100%);
+  --shadow-color: rgba(30, 15, 5, 0.22);
+  --glass-bg: rgba(220, 208, 195, 0.92);
+  --glass-border: rgba(100, 55, 20, 0.18);
+  --danger-color: #B91C1C;
+  --danger-soft: rgba(185, 28, 28, 0.1);
+  --liquid-mask-color: rgba(0, 0, 0, 0.12);
+  --card-shadow: 0 10px 30px -10px rgba(30, 15, 5, 0.22);
+  --nav-shadow: 0 -5px 25px -5px rgba(30, 15, 5, 0.18);
 }
 
 /* ----------------------------------------------------
@@ -69,9 +71,15 @@
 }
 
 html {
-  height: 100%;
+  /* The definitive iOS PWA standalone bottom-gap fix:
+     Use -webkit-fill-available so WebKit fills the true visual viewport
+     including the area behind the home indicator, instead of stopping
+     at the layout viewport edge which creates the white chin gap. */
+  height: -webkit-fill-available;
+  height: 100dvh;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   background-color: var(--bg-primary);
 }
 
@@ -79,12 +87,12 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  /* Match html height to ensure full stretch on all browsers */
+  height: -webkit-fill-available;
+  height: 100dvh;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
   transition: var(--transition-smooth);
 }
 
@@ -118,15 +126,21 @@ a {
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* Stretch to fill full visual viewport on iOS standalone mode.
+     -webkit-fill-available is the key unlock: it matches the actual
+     screen height behind the home indicator bar, eliminating the
+     bottom gap completely. 100dvh is the modern equivalent fallback. */
+  height: -webkit-fill-available;
+  height: 100dvh;
   max-width: 480px; /* Centered mobile container */
   margin: 0 auto;
   position: relative;
+  overflow: hidden;
   background-color: var(--bg-primary);
   border-left: 1px solid var(--border-color);
   border-right: 1px solid var(--border-color);
   box-shadow: 0 0 50px rgba(0,0,0,0.15);
-  transition: var(--transition-smooth);
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 768px) {
@@ -134,8 +148,8 @@ a {
   .app-container {
     max-width: 100%;
     width: 100%;
-    height: 100vh;
     height: 100dvh;
+    height: -webkit-fill-available;
     margin: 0;
     border-radius: 0;
     border-left: none;
@@ -1125,37 +1139,14 @@ a {
   transform: translateY(0);
 }
 
+/* Remove drag handle and close button from mobile-only elements */
 .drawer-handle {
   width: 40px;
   height: 4px;
   background-color: var(--border-color);
   border-radius: 5px;
-  margin: 12px auto 8px auto;
+  margin: 10px auto 0 auto;
   flex-shrink: 0;
-}
-
-.drawer-close {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  color: var(--text-primary);
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: var(--transition-spring);
-  z-index: 5;
-}
-
-.drawer-close:hover {
-  transform: rotate(90deg) scale(1.1);
-  border-color: var(--accent-color);
 }
 
 .drawer-scroll-content {
@@ -1272,50 +1263,119 @@ a {
   text-transform: uppercase;
 }
 
-/* Favorite & Share drawer buttons */
-.drawer-actions {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.action-btn-outline {
-  flex: 1;
-  height: 44px;
-  background: var(--bg-secondary);
+/* Hero card refresh button — subtle, top-right corner */
+.hero-refresh-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  border-radius: var(--border-radius-md);
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   cursor: pointer;
   transition: var(--transition-spring);
+  opacity: 0.55;
+  z-index: 2;
+  padding: 0;
 }
 
-.action-btn-outline:hover {
+.hero-refresh-btn:hover {
+  opacity: 1;
+  color: var(--accent-color);
   border-color: var(--accent-color);
-  background-color: var(--accent-soft);
+  background: var(--accent-soft);
+  transform: rotate(180deg);
 }
 
-.action-btn-outline svg {
+.hero-refresh-btn:active {
+  transform: rotate(360deg) scale(0.9);
+}
+
+/* Drawer header: Favorite (left), flex spacer, Share + Close (right) */
+.drawer-header-actions {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px 0 12px;
+  gap: 6px;
+  flex-shrink: 0;
+  min-height: 44px;
+}
+
+.drawer-header-spacer {
+  flex: 1;
+}
+
+/* Small circular icon buttons in drawer header */
+.drawer-icon-btn {
+  background: var(--accent-soft);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-spring);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.drawer-icon-btn svg {
   stroke: var(--text-secondary);
   transition: var(--transition-smooth);
 }
 
-.action-btn-outline.active {
+.drawer-icon-btn:hover {
+  transform: scale(1.12);
+  background: var(--accent-soft-hover);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.drawer-icon-btn:hover svg {
+  stroke: var(--accent-color);
+}
+
+.drawer-icon-btn.active {
   background-color: var(--accent-soft);
   border-color: var(--accent-color);
   color: var(--accent-color);
 }
 
-.action-btn-outline.active svg {
+.drawer-icon-btn.active svg {
   fill: var(--accent-color);
   stroke: var(--accent-color);
+}
+
+/* Reposition close button to sit in the header bar */
+.drawer-close {
+  position: static !important;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-spring);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.drawer-close:hover {
+  transform: rotate(90deg) scale(1.1);
+  border-color: var(--accent-color);
 }
 
 /* Warnings/Notes */
@@ -1595,9 +1655,16 @@ a {
     flex-direction: column;
   }
 
-  .drawer-handle, .drawer-close {
-    display: none; /* Hide drag handles */
+  /* On desktop: hide mobile-only drag handle and close button,
+     but keep the fav/share icon buttons in drawer header */
+  .drawer-handle { display: none; }
+  .drawer-close { display: none; }
+  .drawer-header-actions {
+    padding: 12px 16px 0 16px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0;
   }
+
 
   .drawer-scroll-content {
     padding: 20px;
@@ -1759,120 +1826,7 @@ a {
 /* ----------------------------------------------------
    FLOATING ACTION BUTTON (FAB)
    ---------------------------------------------------- */
-/* ----------------------------------------------------
-   MIXOLOGY ROULETTE CARD
-   ---------------------------------------------------- */
-.roulette-card {
-  position: relative;
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-md);
-  padding: 24px;
-  overflow: hidden;
-  margin-bottom: 24px;
-  transition: var(--transition-spring);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
 
-.roulette-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent-color);
-  box-shadow: 0 8px 30px var(--accent-soft);
-}
-
-.roulette-card-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
-  position: relative;
-  z-index: 2;
-}
-
-@media (min-width: 600px) {
-  .roulette-card-body {
-    flex-direction: row;
-    text-align: left;
-    justify-content: space-between;
-    gap: 24px;
-  }
-}
-
-.roulette-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.4;
-  transition: var(--transition-smooth);
-}
-
-.roulette-card:hover .roulette-glow {
-  width: 300px;
-  height: 300px;
-  opacity: 0.6;
-}
-
-.roulette-icon-box {
-  font-size: 2.5rem;
-  background: var(--accent-soft);
-  border: 1px solid var(--border-color);
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.15);
-  animation: floatIcon 3s infinite ease-in-out;
-  flex-shrink: 0;
-}
-
-.roulette-info {
-  flex: 1;
-}
-
-.roulette-info h3 {
-  font-size: 1.25rem;
-  color: var(--accent-color);
-  margin-bottom: 4px;
-  letter-spacing: 0.08em;
-}
-
-.roulette-info p {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  max-width: 480px;
-}
-
-.roulette-btn {
-  background: var(--accent-gradient);
-  color: #000;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 4px 15px var(--accent-soft);
-  transition: var(--transition-spring);
-  white-space: nowrap;
-}
-
-.roulette-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px var(--accent-soft-hover);
-}
 
 /* ----------------------------------------------------
    INTERACTIVE SHAKER OVERLAY
