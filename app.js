@@ -1045,6 +1045,213 @@ function getFormattedAmount(amount, servings) {
 /* ----------------------------------------------------
    DYNAMIC SVG GLASSWARE VISUALIZER
    ---------------------------------------------------- */
+function getGradColors(colorStr) {
+  if (colorStr.startsWith('rgba')) {
+    const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    if (match) {
+      const r = parseInt(match[1]);
+      const g = parseInt(match[2]);
+      const b = parseInt(match[3]);
+      const a = match[4] !== undefined ? parseFloat(match[4]) : 1.0;
+      
+      const rDark = Math.max(0, Math.floor(r * 0.82));
+      const gDark = Math.max(0, Math.floor(g * 0.82));
+      const bDark = Math.max(0, Math.floor(b * 0.82));
+      
+      const rLight = Math.min(255, Math.floor(r * 1.15 + 10));
+      const gLight = Math.min(255, Math.floor(g * 1.15 + 10));
+      const bLight = Math.min(255, Math.floor(b * 1.15 + 10));
+      const aLight = Math.min(1.0, a * 0.9);
+      
+      return {
+        bottom: `rgba(${rDark}, ${gDark}, ${bDark}, ${a})`,
+        top: `rgba(${rLight}, ${gLight}, ${bLight}, ${aLight})`
+      };
+    }
+  }
+  return { bottom: colorStr, top: colorStr };
+}
+
+function getGarnishSVG(cocktail, spec) {
+  let garnishHtml = '';
+  const garnishes = cocktail.ingredients.filter(i => i.role === 'garnish');
+  
+  const hasSaltRim = cocktail.ingredients.some(i => {
+    const name = i.name.toLowerCase();
+    return name.includes("salz") && (name.includes("rand") || name.includes("rim"));
+  });
+  const hasSugarRim = cocktail.ingredients.some(i => {
+    const name = i.name.toLowerCase();
+    return name.includes("zucker") && (name.includes("rand") || name.includes("rim"));
+  });
+
+  if (hasSaltRim || hasSugarRim) {
+    const rimColor = hasSaltRim ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 248, 220, 0.85)';
+    const dashPattern = hasSaltRim ? '1.5 2.5' : '2.0 3.0';
+    garnishHtml += `
+      <!-- Coating Rim (Salt/Sugar) -->
+      <path d="M ${spec.rimLeft - 2} ${spec.rimY} Q 100 ${spec.rimY + 4} ${spec.rimRight + 2} ${spec.rimY}" 
+            fill="none" 
+            stroke="${rimColor}" 
+            stroke-width="2.5" 
+            stroke-dasharray="${dashPattern}" 
+            stroke-linecap="round" 
+            opacity="0.95" />
+    `;
+  }
+
+  garnishes.forEach(g => {
+    const name = g.name.toLowerCase();
+    
+    // 1. Lemon, Lime, or Orange slice/wheel on rim
+    if (name.includes("zitrone") || name.includes("lemon") || name.includes("limette") || name.includes("lime") || name.includes("orange")) {
+      const isLime = name.includes("limette") || name.includes("lime");
+      const isOrange = name.includes("orange");
+      
+      const outerColor = isLime ? '#2d6a4f' : isOrange ? '#e76f51' : '#f9844a';
+      const citrusColor = isLime ? '#52b788' : isOrange ? '#f4a261' : '#f9c74f';
+      
+      let wedgesHtml = '';
+      for (let i = 0; i < 8; i++) {
+        const rot = i * 45;
+        wedgesHtml += `<path d="M 0 0 L 13.5 -1.2 A 14 14 0 0 0 10.4 -8.8 Z" fill="${citrusColor}" transform="rotate(${rot})" opacity="0.95"/>`;
+      }
+
+      garnishHtml += `
+        <!-- Citrus wheel on rim with 3D segment detail -->
+        <g transform="translate(${spec.rimRight - 10}, ${spec.rimY - 12}) rotate(25)">
+          <circle cx="0" cy="0" r="19" fill="${outerColor}" />
+          <circle cx="0" cy="0" r="17.5" fill="rgba(255, 255, 255, 0.95)" />
+          <circle cx="0" cy="0" r="15.5" fill="${citrusColor}" />
+          ${wedgesHtml}
+          <!-- Rind slice cutout to look perched on the glass -->
+          <rect x="-1" y="10" width="2" height="10" fill="rgba(255,255,255,0.8)" transform="rotate(-25)"/>
+          <circle cx="0" cy="0" r="2.5" fill="rgba(255, 255, 255, 0.95)" />
+        </g>
+      `;
+    }
+    
+    // 2. Cherry (Kirsche)
+    else if (name.includes("kirsche") || name.includes("cherry")) {
+      garnishHtml += `
+        <!-- Luxury Cocktail Cherry perched on the rim -->
+        <g transform="translate(${spec.rimRight + 4}, ${spec.rimY - 4})">
+          <!-- Stem -->
+          <path d="M 0 0 Q -8 -22 -20 -13" fill="none" stroke="#4a3b32" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- Shadow -->
+          <circle cx="0" cy="0" r="8" fill="rgba(0,0,0,0.15)" transform="translate(1, 1)"/>
+          <!-- Cherry Body -->
+          <circle cx="0" cy="0" r="8" fill="url(#cherry-grad)"/>
+          <!-- 3D Gloss Highlight -->
+          <circle cx="-2.5" cy="-2.5" r="2.2" fill="#ffffff" opacity="0.75" />
+          <circle cx="2" cy="2" r="1" fill="#ffffff" opacity="0.25" />
+        </g>
+      `;
+    }
+    
+    // 3. Olives on pick (Olive)
+    else if (name.includes("olive")) {
+      const x1 = spec.rimLeft + 12;
+      const y1 = spec.rimY - 12;
+      const x2 = spec.rimRight - 20;
+      const y2 = spec.yMax - 8;
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      
+      // Olive 1 center
+      const ox1 = x1 + dx * 0.4;
+      const oy1 = y1 + dy * 0.4;
+      // Olive 2 center
+      const ox2 = x1 + dx * 0.65;
+      const oy2 = y1 + dy * 0.65;
+
+      garnishHtml += `
+        <!-- Olives on a premium metal pick -->
+        <g>
+          <!-- Pick Needle -->
+          <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#c5a059" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- Pick Decorative Top Ring -->
+          <circle cx="${x1 - 1.5}" cy="${y1 - 1.5}" r="3.5" fill="none" stroke="#c5a059" stroke-width="1.5"/>
+          
+          <!-- Olive 1 (with red stuffed pimento) -->
+          <g transform="rotate(35, ${ox1}, ${oy1})">
+            <ellipse cx="${ox1}" cy="${oy1}" rx="7.5" ry="10" fill="#6b705c" stroke="#555a42" stroke-width="0.5"/>
+            <!-- Stuffed Pimento front core -->
+            <ellipse cx="${ox1}" cy="${oy1 - 6}" rx="2.5" ry="1.8" fill="#bc4749"/>
+            <!-- Highlight -->
+            <ellipse cx="${ox1 - 2.5}" cy="${oy1}" rx="1.5" ry="3" fill="#ffffff" opacity="0.3"/>
+          </g>
+          
+          <!-- Olive 2 (with red stuffed pimento) -->
+          <g transform="rotate(35, ${ox2}, ${oy2})">
+            <ellipse cx="${ox2}" cy="${oy2}" rx="7.5" ry="10" fill="#6b705c" stroke="#555a42" stroke-width="0.5"/>
+            <ellipse cx="${ox2}" cy="${oy2 - 6}" rx="2.5" ry="1.8" fill="#bc4749"/>
+            <ellipse cx="${ox2 - 2.5}" cy="${oy2}" rx="1.5" ry="3" fill="#ffffff" opacity="0.3"/>
+          </g>
+        </g>
+      `;
+    }
+    
+    // 4. Mint sprig (Minze / Basilikum)
+    else if (name.includes("minz") || name.includes("basil") || name.includes("minzezweig") || name.includes("minzeblatt")) {
+      const isBasil = name.includes("basil");
+      const leafColor1 = isBasil ? '#4f772d' : '#31572c';
+      const leafColor2 = isBasil ? '#90a955' : '#4f772d';
+      const strokeColor = '#132a13';
+      
+      garnishHtml += `
+        <!-- High-fidelity Mint Bouquet on rim -->
+        <g transform="translate(${spec.rimLeft + 12}, ${spec.rimY - 8})">
+          <!-- Leaf 1 (Left, angled down) -->
+          <g transform="rotate(-30, 0, 0)">
+            <path d="M 0 0 C -12 -8, -20 -4, -24 6 C -18 14, -8 10, 0 0 Z" fill="${leafColor1}" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M 0 0 Q -12 1 -24 6" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+          </g>
+          <!-- Leaf 2 (Right, angled up) -->
+          <g transform="rotate(40, 0, 0)">
+            <path d="M 0 0 C 12 -8, 20 -4, 24 6 C 18 14, 8 10, 0 0 Z" fill="${leafColor2}" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M 0 0 Q 12 1 24 6" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+          </g>
+          <!-- Leaf 3 (Center vertical, smaller) -->
+          <g transform="rotate(5, 0, 0)">
+            <path d="M 0 0 C -6 -12, -4 -20, 4 -24 C 10 -18, 8 -8, 0 0 Z" fill="#90a955" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M 0 0 Q 1 -12 4 -24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+          </g>
+        </g>
+      `;
+    }
+
+    // 5. Orange peel twist (Zeste)
+    else if (name.includes("zeste") || name.includes("peel") || name.includes("schale")) {
+      const isOrange = name.includes("orange");
+      const twistColor = isOrange ? '#e76f51' : '#f9c74f';
+      const twistInner = isOrange ? '#f4a261' : '#ffe3e0';
+      
+      garnishHtml += `
+        <!-- High-fidelity 3D Citrus Twist ribbon hanging over rim -->
+        <g>
+          <!-- Back layer of the twist (inside glass) -->
+          <path d="M ${spec.rimRight - 16} ${spec.rimY - 4} Q ${spec.rimRight - 12} ${spec.rimY - 14} ${spec.rimRight - 4} ${spec.rimY - 12}" fill="none" stroke="${twistColor}" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M ${spec.rimRight - 16} ${spec.rimY - 4} Q ${spec.rimRight - 12} ${spec.rimY - 14} ${spec.rimRight - 4} ${spec.rimY - 12}" fill="none" stroke="${twistInner}" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- Front layer of the twist (hanging over outside) -->
+          <path d="M ${spec.rimRight - 4} ${spec.rimY - 12} C ${spec.rimRight + 8} ${spec.rimY - 8}, ${spec.rimRight + 12} ${spec.rimY + 8}, ${spec.rimRight + 2} ${spec.rimY + 16} C ${spec.rimRight - 6} ${spec.rimY + 22}, ${spec.rimRight - 2} ${spec.rimY + 30}, ${spec.rimRight + 4} ${spec.rimY + 32}" 
+                fill="none" 
+                stroke="${twistColor}" 
+                stroke-width="4.5" 
+                stroke-linecap="round"/>
+          <path d="M ${spec.rimRight - 4} ${spec.rimY - 12} C ${spec.rimRight + 8} ${spec.rimY - 8}, ${spec.rimRight + 12} ${spec.rimY + 8}, ${spec.rimRight + 2} ${spec.rimY + 16} C ${spec.rimRight - 6} ${spec.rimY + 22}, ${spec.rimRight - 2} ${spec.rimY + 30}, ${spec.rimRight + 4} ${spec.rimY + 32}" 
+                fill="none" 
+                stroke="${twistInner}" 
+                stroke-width="1.8" 
+                stroke-linecap="round"/>
+        </g>
+      `;
+    }
+  });
+
+  return garnishHtml;
+}
+
 function getMinimalSVG(cocktail) {
   const glassName = cocktail.glassware[0] || 'Coupeglas';
   const spec = glasswareSpecs[glassName] || glasswareSpecs['Coupeglas'];
@@ -1052,10 +1259,12 @@ function getMinimalSVG(cocktail) {
   // Extract liquid colors
   const liquidIngredients = cocktail.ingredients.filter(i => i.role === 'ingredient' && i.amount.value_ml > 0);
   const mainColor = liquidIngredients.length > 0 ? getIngredientColor(liquidIngredients[0].name) : 'rgba(212, 175, 55, 0.4)';
+  const colors = getGradColors(mainColor);
   
   // Generate a random ID suffix to ensure uniqueness in the DOM
   const rand = Math.random().toString(36).substr(2, 5);
   const uniqueId = `glass-mini-clip-${cocktail.id}-${rand}`;
+  const gradId = `glass-mini-grad-${cocktail.id}-${rand}`;
   
   // Check if it has ice and straw
   const hasIce = ['Rocks-Glas', 'Highball-Glas', 'Collins-Glas', 'Kupferbecher', 'Tiki-Becher', 'Tiki-Glas', 'hitzefestes Glas'].includes(glassName);
@@ -1088,6 +1297,8 @@ function getMinimalSVG(cocktail) {
   if (spec.highlight) {
     highlightHtml = `<path d="${spec.highlight}" fill="rgba(255, 255, 255, 0.08)" pointer-events="none" />`;
   }
+
+  const garnishHtml = getGarnishSVG(cocktail, spec);
   
   return `
     <svg viewBox="0 0 200 200" width="100%" height="100%">
@@ -1095,11 +1306,20 @@ function getMinimalSVG(cocktail) {
         <clipPath id="${uniqueId}">
           <path d="${spec.cavity}"/>
         </clipPath>
+        <linearGradient id="${gradId}" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="${colors.bottom}" />
+          <stop offset="100%" stop-color="${colors.top}" />
+        </linearGradient>
+        <radialGradient id="cherry-grad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ff4d6d" />
+          <stop offset="40%" stop-color="#c1121f" />
+          <stop offset="100%" stop-color="#780000" />
+        </radialGradient>
       </defs>
       <!-- Cavity liquid mockup with absolute origin-relative clip path to bypass hash routing bug -->
       <g clip-path="url(/#${uniqueId})">
         <rect x="0" y="0" width="200" height="200" fill="rgba(255,255,255,0.03)"/>
-        <rect x="0" y="${spec.yMin + (spec.yMax - spec.yMin)*0.25}" width="200" height="200" fill="${mainColor}"/>
+        <rect x="0" y="${spec.yMin + (spec.yMax - spec.yMin)*0.25}" width="200" height="200" fill="url(/#${gradId})"/>
         ${iceHtml}
       </g>
       ${strawHtml}
@@ -1107,6 +1327,7 @@ function getMinimalSVG(cocktail) {
       <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
       ${highlightHtml}
       <path d="${spec.body}" fill="${spec.fill}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}"/>
+      ${garnishHtml}
     </svg>
   `;
 }
@@ -1127,6 +1348,8 @@ function drawGlasswareSVG(cocktail) {
   
   let layersHtml = '';
   let sparklesHtml = '';
+  let gradientsDef = '';
+  const rand = Math.random().toString(36).substr(2, 5);
   
   // 2. Set up layers if the drink contains liquids
   if (totalVolume > 0) {
@@ -1135,20 +1358,29 @@ function drawGlasswareSVG(cocktail) {
     
     let currentY = spec.yMax;
     
-    liquids.forEach(liq => {
+    liquids.forEach((liq, idx) => {
       const volRatio = (liq.amount.value_ml || 0) / totalVolume;
       const layerHeight = liquidTotalHeight * volRatio;
       
       const layerY = currentY - layerHeight;
       const color = getIngredientColor(liq.name);
+      const colors = getGradColors(color);
+      const layerGradId = `glass-layer-grad-${cocktail.id}-${rand}-${idx}`;
       
+      gradientsDef += `
+        <linearGradient id="${layerGradId}" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="${colors.bottom}" />
+          <stop offset="100%" stop-color="${colors.top}" />
+        </linearGradient>
+      `;
+
       layersHtml += `
         <rect class="liquid-layer" 
               x="0" 
               y="${currentY}" 
               width="200" 
               height="0" 
-              fill="${color}"
+              fill="url(/#${layerGradId})"
               data-target-y="${layerY}" 
               data-target-height="${layerHeight}"/>
       `;
@@ -1179,73 +1411,8 @@ function drawGlasswareSVG(cocktail) {
     }
   }
 
-  // 3. Render Garnishes if exist in ingredients
-  let garnishHtml = '';
-  const garnishes = cocktail.ingredients.filter(i => i.role === 'garnish');
-  
-  garnishes.forEach(g => {
-    const name = g.name.toLowerCase();
-    
-    // Lemon or Lime slice/wheel on rim
-    if (name.includes("zitrone") || name.includes("lemon") || name.includes("limette") || name.includes("lime") || name.includes("orange")) {
-      const citrusColor = name.includes("limette") || name.includes("lime") ? '#9ef01a' : name.includes("orange") ? '#f4a261' : '#f9c74f';
-      const outerColor = name.includes("limette") || name.includes("lime") ? '#74c69d' : name.includes("orange") ? '#e76f51' : '#f9844a';
-      
-      garnishHtml += `
-        <!-- Citrus wheel on rim -->
-        <g transform="translate(${spec.rimRight - 10}, ${spec.rimY - 12}) rotate(25)">
-          <circle cx="0" cy="0" r="18" fill="${outerColor}" />
-          <circle cx="0" cy="0" r="15" fill="${citrusColor}" />
-          <!-- Spokes -->
-          <line x1="-15" y1="0" x2="15" y2="0" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          <line x1="0" y1="-15" x2="0" y2="15" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          <line x1="-11" y1="-11" x2="11" y2="11" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          <line x1="-11" y1="11" x2="11" y2="-11" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          <circle cx="0" cy="0" r="3" fill="#fff" />
-        </g>
-      `;
-    }
-    
-    // Cherry (Kirsche)
-    else if (name.includes("kirsche") || name.includes("cherry")) {
-      garnishHtml += `
-        <!-- Cocktail cherry on rim -->
-        <g transform="translate(${spec.rimRight + 5}, ${spec.rimY - 5})">
-          <path d="M 0 0 Q -10 -25 -22 -15" fill="none" stroke="#5c3d2e" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="0" cy="0" r="7" fill="#d90429" />
-          <circle cx="-2" cy="-2" r="2" fill="#fff" opacity="0.6" />
-        </g>
-      `;
-    }
-    
-    // Olive (Oliven)
-    else if (name.includes("olive")) {
-      garnishHtml += `
-        <!-- Cocktail toothpick with 2 olives -->
-        <g transform="translate(0, 0)">
-          <!-- Pick -->
-          <line x1="${spec.rimLeft + 15}" y1="${spec.rimY - 15}" x2="${spec.rimRight - 15}" x2="100" y1="50" y2="${spec.yMax - 5}" stroke="#dfc29a" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Olives -->
-          <ellipse cx="${spec.rimLeft + 45}" cy="${spec.rimY + 15}" rx="7" ry="9" fill="#70e000" transform="rotate(30, ${spec.rimLeft + 45}, ${spec.rimY + 15})"/>
-          <ellipse cx="${spec.rimLeft + 45}" cy="${spec.rimY + 15}" rx="2" ry="3" fill="#ee2400" transform="rotate(30, ${spec.rimLeft + 45}, ${spec.rimY + 15})"/>
-          <ellipse cx="${spec.rimLeft + 65}" cy="${spec.rimY + 35}" rx="7" ry="9" fill="#70e000" transform="rotate(30, ${spec.rimLeft + 65}, ${spec.rimY + 35})"/>
-          <ellipse cx="${spec.rimLeft + 65}" cy="${spec.rimY + 35}" rx="2" ry="3" fill="#ee2400" transform="rotate(30, ${spec.rimLeft + 65}, ${spec.rimY + 35})"/>
-        </g>
-      `;
-    }
-    
-    // Mint sprig (Minze / Basilikum)
-    else if (name.includes("minz") || name.includes("basil") || name.includes("minzezweig") || name.includes("minzeblatt")) {
-      garnishHtml += `
-        <!-- Mint leaf garnish -->
-        <g transform="translate(${spec.rimLeft + 15}, ${spec.rimY - 10})">
-          <path d="M 0 0 Q -15 -10 -25 5 Q -10 15 0 0 Z" fill="#2d6a4f" stroke="#1b4332" stroke-width="1"/>
-          <path d="M 0 0 Q 5 -18 20 -15 Q 15 2 0 0 Z" fill="#40916c" stroke="#1b4332" stroke-width="1"/>
-          <path d="M 0 0 Q -5 -25 5 -30 Q 15 -15 0 0 Z" fill="#52b788" stroke="#1b4332" stroke-width="1" />
-        </g>
-      `;
-    }
-  });
+  // 3. Render Garnishes
+  const garnishHtml = getGarnishSVG(cocktail, spec);
 
   // 4. Determine ice, straw, and custom highlight overlays
   let iceCubesHtml = '';
@@ -1301,6 +1468,12 @@ function drawGlasswareSVG(cocktail) {
         <clipPath id="${detailClipId}">
           <path d="${spec.cavity}"/>
         </clipPath>
+        <radialGradient id="cherry-grad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ff4d6d" />
+          <stop offset="40%" stop-color="#c1121f" />
+          <stop offset="100%" stop-color="#780000" />
+        </radialGradient>
+        ${gradientsDef}
       </defs>
 
       <!-- Liquid Cavity Box with absolute clip-path path to bypass hash routing bug -->
