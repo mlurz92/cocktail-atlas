@@ -64,16 +64,23 @@
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  scrollbar-width: thin;
+  scrollbar-width: none;  /* Firefox */
   scrollbar-color: var(--border-color) transparent;
+}
+
+html {
+  height: 100%;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  height: 100vh;
-  height: -webkit-fill-available;
+  height: 100%;
+  height: 100dvh;
   overflow: hidden;
   position: relative;
   transition: var(--transition-smooth);
@@ -96,20 +103,11 @@ a {
   color: inherit;
 }
 
-/* Smooth customized scrollbars */
+/* Hide scrollbars globally for a cleaner, native app-like interface */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-color);
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* ----------------------------------------------------
@@ -148,7 +146,7 @@ a {
 @media (min-width: 1150px) {
   /* On medium desktops, center as a noble floating card application */
   .app-container {
-    max-width: 1100px;
+    max-width: 1220px;
     width: 100%;
     height: 92vh;
     height: 92dvh;
@@ -161,9 +159,9 @@ a {
 }
 
 @media (min-width: 1440px) {
-  /* Expand container size on large widescreen monitors */
+  /* Expand container size on large widescreen monitors to utilize width optimally */
   .app-container {
-    max-width: 1350px;
+    max-width: 1520px;
     height: 90vh;
     height: 90dvh;
     margin: 5vh auto;
@@ -1620,7 +1618,7 @@ a {
 
 @media (min-width: 1440px) {
   .app-container {
-    grid-template-columns: 1fr 460px; /* Maximum split sidebar */
+    grid-template-columns: 1fr 450px; /* Balanced split sidebar */
   }
 
   .drawer-scroll-content {
