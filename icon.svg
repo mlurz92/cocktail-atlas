@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Dark Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141416" />
+      <stop offset="50%" stop-color="#09090A" />
+      <stop offset="100%" stop-color="#1D1D22" />
+    </linearGradient>
+
+    <!-- Premium Metallic Gold Gradient -->
+    <linearGradient id="gold-grad" x1="160" y1="170" x2="352" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#BF953F" />
+      <stop offset="25%" stop-color="#FCF6BA" />
+      <stop offset="50%" stop-color="#B38728" />
+      <stop offset="75%" stop-color="#FBF5B7" />
+      <stop offset="100%" stop-color="#AA771C" />
+    </linearGradient>
+
+    <!-- Liquid Saffron Gold Gradient -->
+    <linearGradient id="liquid-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#B38728" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#D4AF37" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#FFD700" stop-opacity="0.45" />
+    </linearGradient>
+
+    <!-- Gold Accent Radial Glow -->
+    <radialGradient id="gold-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Base (Perfect App Icon Rounded Shape) -->
+  <rect width="512" height="512" rx="112" fill="url(#bg-grad)" />
+
+  <!-- Ambient Center Glow -->
+  <circle cx="256" cy="256" r="180" fill="url(#gold-glow)" />
+
+  <!-- Geometric Luxury Ring Frame -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#gold-grad)" stroke-width="1" opacity="0.25" />
+  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#gold-grad)" stroke-width="2.5" stroke-dasharray="8 6" opacity="0.4" />
+
+  <!-- Cocktail Liquid Inside -->
+  <path d="M 195 210 L 256 280 L 317 210 Z" fill="url(#liquid-grad)" />
+  <ellipse cx="256" cy="210" rx="61" ry="6" fill="rgba(255, 255, 255, 0.25)" />
+
+  <!-- Stylized Gold Glass Structure -->
+  <!-- Glass Rim & Bowl -->
+  <path d="M 160 170 L 256 280 L 352 170 Z" fill="none" stroke="url(#gold-grad)" stroke-width="6" stroke-linejoin="round" />
+  
+  <!-- Stem -->
+  <line x1="256" y1="280" x2="256" y2="390" stroke="url(#gold-grad)" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Base -->
+  <path d="M 190 390 L 322 390" stroke="url(#gold-grad)" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Golden Citrus Twist Garnish -->
+  <path d="M 338 154 C 352 150, 360 162, 348 178 C 336 194, 342 206, 356 200" fill="none" stroke="url(#gold-grad)" stroke-width="4.5" stroke-linecap="round" />
+
+  <!-- Floating bubbles/sparkles -->
+  <circle cx="230" cy="235" r="2.5" fill="#fff" opacity="0.6" />
+  <circle cx="275" cy="245" r="3.5" fill="#fff" opacity="0.4" />
+  <circle cx="250" cy="260" r="2" fill="#fff" opacity="0.5" />
+</svg>

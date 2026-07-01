@@ -1,0 +1,22 @@
+{
+  "name": "mixology-pwa",
+  "version": "1.0.0",
+  "description": "Premium Cocktail Guide & Bar-Schrank WebApp",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -c-1",
+    "dev": "npx http-server -p 8080 -c-1"
+  },
+  "keywords": [
+    "cocktails",
+    "pwa",
+    "recipe",
+    "iphone-pwa",
+    "premium-design"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

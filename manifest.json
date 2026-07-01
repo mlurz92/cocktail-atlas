@@ -1,0 +1,31 @@
+{
+  "name": "Mixology — Premium Cocktail Guide",
+  "short_name": "Mixology",
+  "description": "Premium Cocktail Rezepte & Bar-Schrank Mixer auf Basis der Top 100 Klassiker",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0F0F10",
+  "theme_color": "#0F0F10",
+  "categories": ["food", "drink", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
