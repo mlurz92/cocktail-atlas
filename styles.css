@@ -5,6 +5,7 @@
   /* Common spacing, timing, and layout constants */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ios-standalone-bottom-fallback: 0px;
   --border-radius-lg: 24px;
   --border-radius-md: 16px;
   --border-radius-sm: 10px;
@@ -14,6 +15,23 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --card-shadow: 0 10px 30px -10px var(--shadow-color);
   --nav-shadow: 0 -5px 25px -5px var(--shadow-color);
+}
+/* iOS installed PWAs can report a zero bottom safe-area inset even though the
+   home-indicator region is still visually present. In standalone display mode,
+   reserve a small WebKit-only fallback so the bottom navigation background
+   always extends into that region instead of leaving an unused chin below it. */
+@media (display-mode: standalone) {
+  @supports (-webkit-touch-callout: none) {
+    :root {
+      --safe-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+      --ios-standalone-bottom-fallback: 20px;
+    }
+
+    html,
+    body {
+      background-color: var(--glass-bg, #0A0A0B);
+    }
+  }
 }
 
 /* Theme 1: Dark Mode (Default) - Charcoal Dark & Gold */
@@ -1060,6 +1078,7 @@ a {
   left: 0;
   right: 0;
   height: calc(var(--safe-bottom) + 64px);
+  min-height: calc(64px + var(--ios-standalone-bottom-fallback));
   background-color: var(--glass-bg);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
@@ -1071,6 +1090,19 @@ a {
   box-shadow: var(--nav-shadow);
   z-index: 99;
   transition: var(--transition-smooth);
+}
+
+.app-navbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--ios-standalone-bottom-fallback));
+  height: var(--ios-standalone-bottom-fallback);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  pointer-events: none;
 }
 
 .nav-item {
