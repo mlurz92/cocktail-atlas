@@ -69,7 +69,7 @@
 }
 
 html {
-  height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 0;
   background-color: var(--bg-primary);
@@ -79,9 +79,12 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  height: 100vh;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   overflow: hidden;
-  position: relative;
   transition: var(--transition-smooth);
 }
 
@@ -115,7 +118,7 @@ a {
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   max-width: 480px; /* Centered mobile container */
   margin: 0 auto;
   position: relative;
@@ -1105,7 +1108,7 @@ a {
   background-color: var(--bg-primary);
   width: 100%;
   max-width: 480px;
-  height: 90%;
+  height: 95%;
   border-top-left-radius: var(--border-radius-lg);
   border-top-right-radius: var(--border-radius-lg);
   box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.3);

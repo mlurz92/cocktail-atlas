@@ -1520,7 +1520,7 @@ function setupSwipeToDismiss() {
     if (diff > 0) {
       sheet.style.transform = `translateY(${diff}px)`;
       // Fade out background backdrop slightly during pull
-      const opacity = 1 - (diff / (window.innerHeight * 0.9));
+      const opacity = 1 - (diff / (window.innerHeight * 0.95));
       overlay.style.opacity = Math.max(opacity, 0.2);
     }
   }, { passive: true });
