@@ -14,6 +14,12 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --card-shadow: 0 10px 30px -10px var(--shadow-color);
   --nav-shadow: 0 -5px 25px -5px var(--shadow-color);
+  /* True viewport height in px, kept in sync by app.js (window.innerHeight).
+     iOS standalone PWAs report an incorrect value for 100dvh on cold start
+     (a documented WebKit bug), which leaves a gap the size of the home
+     indicator area beneath fixed-height shells. Falls back to 100dvh until
+     JS runs, and for non-JS contexts. */
+  --app-height: 100dvh;
 }
 
 /* Theme 1: Dark Mode (Default) - Charcoal Dark & Gold */
@@ -34,6 +40,13 @@
   --danger-color: #EF4444;
   --danger-soft: rgba(239, 68, 68, 0.1);
   --liquid-mask-color: rgba(0, 0, 0, 0.2);
+  /* Text/icon color for elements sitting directly on --accent-color / --accent-gradient */
+  --on-accent: #000000;
+  /* Glassware illustration line colors: must stay legible against the card
+     background behind them (not the liquid fill), so they are themed. */
+  --glass-outline: rgba(255, 255, 255, 0.2);
+  --glass-outline-soft: rgba(255, 255, 255, 0.1);
+  --glass-shine: rgba(255, 255, 255, 0.1);
 }
 
 /* Theme 2: Light Mode - Warm Ivory & Deep Sienna — High Contrast Edition */
@@ -56,6 +69,14 @@
   --liquid-mask-color: rgba(0, 0, 0, 0.12);
   --card-shadow: 0 10px 30px -10px rgba(30, 15, 5, 0.22);
   --nav-shadow: 0 -5px 25px -5px rgba(30, 15, 5, 0.18);
+  /* accent-gradient/accent-color are dark copper tones in light mode, so
+     black text on top of them is nearly unreadable — use a light color instead. */
+  --on-accent: #FBF3E7;
+  /* Glassware illustration lines: the previous white-on-white values from
+     dark mode were invisible against the light ivory card backgrounds. */
+  --glass-outline: rgba(26, 17, 10, 0.55);
+  --glass-outline-soft: rgba(26, 17, 10, 0.3);
+  --glass-shine: rgba(255, 255, 255, 0.65);
 }
 
 /* ----------------------------------------------------
@@ -71,12 +92,14 @@
 }
 
 html {
-  /* The definitive iOS PWA standalone bottom-gap fix:
-     Use -webkit-fill-available so WebKit fills the true visual viewport
-     including the area behind the home indicator, instead of stopping
-     at the layout viewport edge which creates the white chin gap. */
-  height: -webkit-fill-available;
-  height: 100dvh;
+  /* The definitive iOS PWA standalone bottom-gap fix: 100dvh alone is
+     unreliable in standalone/home-screen mode (a documented WebKit cold-start
+     bug where it under-reports height, leaving a gap the size of the home
+     indicator). --app-height is kept in sync with window.innerHeight by
+     app.js, which is accurate in standalone mode since there is no browser
+     chrome to account for. */
+  height: 100vh;
+  height: var(--app-height);
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -88,8 +111,8 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   /* Match html height to ensure full stretch on all browsers */
-  height: -webkit-fill-available;
-  height: 100dvh;
+  height: 100vh;
+  height: var(--app-height);
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -126,12 +149,10 @@ a {
 .app-container {
   display: flex;
   flex-direction: column;
-  /* Stretch to fill full visual viewport on iOS standalone mode.
-     -webkit-fill-available is the key unlock: it matches the actual
-     screen height behind the home indicator bar, eliminating the
-     bottom gap completely. 100dvh is the modern equivalent fallback. */
-  height: -webkit-fill-available;
-  height: 100dvh;
+  /* Stretch to fill the full visual viewport on iOS standalone mode.
+     See --app-height definition in :root for why 100dvh alone is not enough. */
+  height: 100vh;
+  height: var(--app-height);
   max-width: 480px; /* Centered mobile container */
   margin: 0 auto;
   position: relative;
@@ -148,8 +169,8 @@ a {
   .app-container {
     max-width: 100%;
     width: 100%;
-    height: 100dvh;
-    height: -webkit-fill-available;
+    height: 100vh;
+    height: var(--app-height);
     margin: 0;
     border-radius: 0;
     border-left: none;
@@ -336,7 +357,7 @@ a {
   padding: 6px 12px;
   border-radius: 50px;
   background: var(--accent-gradient);
-  color: #000;
+  color: var(--on-accent);
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
@@ -736,7 +757,7 @@ a {
 
 .filter-pill.active {
   background: var(--accent-gradient);
-  color: #000;
+  color: var(--on-accent);
   border-color: transparent;
   font-weight: 600;
   box-shadow: 0 4px 10px var(--accent-soft);
@@ -970,7 +991,7 @@ a {
 
 .checkbox-checkmark {
   font-size: 0.65rem;
-  color: #000;
+  color: var(--on-accent);
   display: none;
   font-weight: 800;
 }

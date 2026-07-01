@@ -11,7 +11,30 @@
   <meta name="apple-mobile-web-app-title" content="Mixology">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0F0F10">
-  
+
+  <!-- iOS PWA standalone-mode bottom-gap fix: 100dvh is known to under-report
+       the viewport height on cold start when launched from the home screen
+       (WebKit bug), leaving a gap the size of the home indicator area. This
+       runs before first paint so the CSS var is ready by the time --app-height
+       is used. window.innerHeight is reliable in standalone mode because
+       there is no browser chrome to account for. -->
+  <script>
+    (function () {
+      function setAppHeight() {
+        document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
+      }
+      setAppHeight();
+      window.addEventListener('resize', setAppHeight);
+      window.addEventListener('orientationchange', setAppHeight);
+      window.addEventListener('pageshow', setAppHeight);
+      // Re-check shortly after launch: on iOS standalone cold start the
+      // reported innerHeight can briefly settle to a wrong value before
+      // the layout engine finishes initializing.
+      setTimeout(setAppHeight, 100);
+      setTimeout(setAppHeight, 500);
+    })();
+  </script>
+
   <!-- Links -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">

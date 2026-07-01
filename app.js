@@ -19,7 +19,7 @@ const glasswareSpecs = {
     body: 'M 46 48 L 154 48 L 100 118 Z M 100 118 L 100 175 M 65 175 L 135 175',
     highlight: 'M 52 52 L 98 105 L 94 105 L 48 52 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2,
     yMin: 50,
     yMax: 115,
@@ -32,7 +32,7 @@ const glasswareSpecs = {
     body: 'M 58 55 L 142 55 L 138 160 L 62 160 Z M 62 150 L 138 150 L 138 160 L 62 160 Z',
     highlight: 'M 65 65 L 72 65 L 75 145 L 68 145 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.5,
     yMin: 60,
     yMax: 150,
@@ -45,7 +45,7 @@ const glasswareSpecs = {
     body: 'M 46 58 C 46 120, 154 120, 154 58 M 100 118 L 100 175 M 65 175 L 135 175',
     highlight: 'M 54 62 C 54 95, 78 112, 100 113 C 85 108, 65 92, 65 62 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2,
     yMin: 60,
     yMax: 115,
@@ -58,7 +58,7 @@ const glasswareSpecs = {
     body: 'M 64 40 L 136 40 L 134 165 L 66 165 Z M 66 155 L 134 155 L 134 165 L 66 165 Z',
     highlight: 'M 71 50 L 78 50 L 80 150 L 73 150 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.5,
     yMin: 45,
     yMax: 155,
@@ -71,7 +71,7 @@ const glasswareSpecs = {
     body: 'M 68 30 L 132 30 L 130 165 L 70 165 Z M 70 155 L 130 155 L 130 165 L 70 165 Z',
     highlight: 'M 75 40 L 81 40 L 83 150 L 77 150 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.5,
     yMin: 35,
     yMax: 155,
@@ -84,7 +84,7 @@ const glasswareSpecs = {
     body: 'M 68 42 C 50 88, 46 112, 73 128 C 83 133, 117 133, 127 128 C 154 112, 150 88, 132 42 Z M 100 130 L 100 165 M 75 165 L 125 165',
     highlight: 'M 76 50 C 65 88, 60 102, 80 118 C 73 110, 68 95, 76 50 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2,
     yMin: 45,
     yMax: 128,
@@ -138,7 +138,7 @@ const glasswareSpecs = {
     body: 'M 61 48 C 61 48, 56 128, 100 135 C 144 128, 139 48, 139 48 M 100 135 L 100 175 M 70 175 L 130 175',
     highlight: 'M 69 52 C 69 52, 64 112, 100 118 C 85 114, 75 90, 75 52 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2,
     yMin: 50,
     yMax: 132,
@@ -151,7 +151,7 @@ const glasswareSpecs = {
     body: 'M 77 38 L 123 38 C 123 38, 123 118, 100 128 C 77 118, 77 38, 77 38 M 100 128 L 100 178 M 70 178 L 130 178',
     highlight: 'M 83 42 C 83 42, 83 102, 100 110 C 90 102, 88 70, 88 42 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2,
     yMin: 40,
     yMax: 125,
@@ -164,7 +164,7 @@ const glasswareSpecs = {
     body: 'M 46 58 C 46 120, 154 120, 154 58 M 100 118 L 100 175 M 65 175 L 135 175',
     highlight: 'M 54 62 C 54 95, 78 112, 100 113 C 85 108, 65 92, 65 62 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2,
     yMin: 60,
     yMax: 115,
@@ -177,7 +177,7 @@ const glasswareSpecs = {
     body: 'M 66 45 L 134 45 L 129 155 L 71 155 Z M 71 145 L 129 145 L 129 155 L 71 155 Z M 130 75 C 150 75, 150 125, 130 125',
     highlight: 'M 73 53 L 80 53 L 82 142 L 75 142 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.2,
     yMin: 50,
     yMax: 145,
@@ -190,7 +190,7 @@ const glasswareSpecs = {
     body: 'M 41 72 C 41 140, 159 140, 159 72 M 75 136 L 65 155 L 135 155 L 125 136',
     highlight: 'M 49 78 C 49 110, 85 132, 100 133 C 80 128, 62 112, 62 78 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.5,
     yMin: 75,
     yMax: 135,
@@ -203,7 +203,7 @@ const glasswareSpecs = {
     body: 'M 74 65 L 126 65 L 122 160 L 78 160 Z M 78 150 L 122 150 L 122 160 L 78 160 Z',
     highlight: 'M 80 73 L 86 73 L 87 145 L 81 145 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.5,
     yMin: 70,
     yMax: 150,
@@ -216,7 +216,7 @@ const glasswareSpecs = {
     body: 'M 71 65 L 129 65 L 124 158 L 76 158 Z M 76 150 L 124 150 L 124 158 L 76 158 Z',
     highlight: 'M 78 73 L 84 73 L 85 145 L 79 145 Z',
     fill: 'none',
-    stroke: 'rgba(255, 255, 255, 0.15)',
+    stroke: 'var(--glass-outline)',
     strokeWidth: 2.5,
     yMin: 70,
     yMax: 150,
@@ -1352,7 +1352,7 @@ function getMinimalSVG(cocktail) {
   
   let highlightHtml = '';
   if (spec.highlight) {
-    highlightHtml = `<path d="${spec.highlight}" fill="rgba(255, 255, 255, 0.08)" pointer-events="none" />`;
+    highlightHtml = `<path d="${spec.highlight}" fill="var(--glass-shine)" pointer-events="none" />`;
   }
 
   const garnishHtml = getGarnishSVG(cocktail, spec);
@@ -1381,7 +1381,7 @@ function getMinimalSVG(cocktail) {
       </g>
       ${strawHtml}
       <!-- Glass outline -->
-      <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+      <path d="${spec.cavity}" fill="none" stroke="var(--glass-outline-soft)" stroke-width="2"/>
       ${highlightHtml}
       <path d="${spec.body}" fill="${spec.fill}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}"/>
       ${garnishHtml}
@@ -1511,7 +1511,7 @@ function drawGlasswareSVG(cocktail) {
 
   let highlightHtml = '';
   if (spec.highlight) {
-    highlightHtml = `<path d="${spec.highlight}" fill="rgba(255, 255, 255, 0.12)" pointer-events="none" />`;
+    highlightHtml = `<path d="${spec.highlight}" fill="var(--glass-shine)" pointer-events="none" />`;
   }
 
   // --- NEW: Liquid surface meniscus line (top of liquid, realistic glimmer) ---
@@ -1620,7 +1620,7 @@ function drawGlasswareSVG(cocktail) {
       ${innerRefractionHtml}
 
       <!-- Inner glass cavity stroke outline -->
-      <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" />
+      <path d="${spec.cavity}" fill="none" stroke="var(--glass-outline-soft)" stroke-width="1.5" />
 
       <!-- Glass outer structure (mug, handle, stem, base) with drop shadow -->
       <path d="${spec.body}" fill="${spec.fill}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}" stroke-linejoin="round" filter="url(/#glass-shadow)" />
