@@ -69,18 +69,17 @@
 }
 
 html {
-  height: 100%;
-  height: 100dvh;
+  height: 100vh;
   margin: 0;
   padding: 0;
+  background-color: var(--bg-primary);
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  height: 100%;
-  height: 100dvh;
+  height: 100vh;
   overflow: hidden;
   position: relative;
   transition: var(--transition-smooth);
@@ -117,7 +116,6 @@ a {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  height: 100dvh;
   max-width: 480px; /* Centered mobile container */
   margin: 0 auto;
   position: relative;
@@ -1574,6 +1572,8 @@ a {
     visibility: visible !important;
     background: none;
     border-left: 1px solid var(--border-color);
+    height: 100%;
+    min-height: 0;
   }
 
   .drawer-backdrop {
@@ -1583,10 +1583,13 @@ a {
   .drawer-sheet {
     transform: none !important; /* No slide-up animation */
     height: 100%;
+    min-height: 0;
     border-radius: 0;
     box-shadow: none;
     border-top: none;
     border-left: none;
+    display: flex;
+    flex-direction: column;
   }
 
   .drawer-handle, .drawer-close {
