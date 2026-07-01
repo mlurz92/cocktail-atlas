@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mixology-v2';
+const CACHE_NAME = 'mixology-v3';
 const ASSETS = [
   'index.html',
   'styles.css',

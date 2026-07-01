@@ -17,6 +17,7 @@ const glasswareSpecs = {
   'Martiniglas': {
     cavity: 'M 50 50 L 150 50 L 100 115 Z',
     body: 'M 46 48 L 154 48 L 100 118 Z M 100 118 L 100 175 M 65 175 L 135 175',
+    highlight: 'M 52 52 L 98 105 L 94 105 L 48 52 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2,
@@ -29,6 +30,7 @@ const glasswareSpecs = {
   'Rocks-Glas': {
     cavity: 'M 62 60 L 138 60 L 134 150 L 66 150 Z',
     body: 'M 58 55 L 142 55 L 138 160 L 62 160 Z M 62 150 L 138 150 L 138 160 L 62 160 Z',
+    highlight: 'M 65 65 L 72 65 L 75 145 L 68 145 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.5,
@@ -41,6 +43,7 @@ const glasswareSpecs = {
   'Coupeglas': {
     cavity: 'M 50 60 C 50 115, 150 115, 150 60 Z',
     body: 'M 46 58 C 46 120, 154 120, 154 58 M 100 118 L 100 175 M 65 175 L 135 175',
+    highlight: 'M 54 62 C 54 95, 78 112, 100 113 C 85 108, 65 92, 65 62 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2,
@@ -53,6 +56,7 @@ const glasswareSpecs = {
   'Highball-Glas': {
     cavity: 'M 68 45 L 132 45 L 130 155 L 70 155 Z',
     body: 'M 64 40 L 136 40 L 134 165 L 66 165 Z M 66 155 L 134 155 L 134 165 L 66 165 Z',
+    highlight: 'M 71 50 L 78 50 L 80 150 L 73 150 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.5,
@@ -65,6 +69,7 @@ const glasswareSpecs = {
   'Collins-Glas': {
     cavity: 'M 72 35 L 128 35 L 126 155 L 74 155 Z',
     body: 'M 68 30 L 132 30 L 130 165 L 70 165 Z M 70 155 L 130 155 L 130 165 L 70 165 Z',
+    highlight: 'M 75 40 L 81 40 L 83 150 L 77 150 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.5,
@@ -77,6 +82,7 @@ const glasswareSpecs = {
   'Hurricaneglas': {
     cavity: 'M 72 45 C 55 90, 50 110, 75 125 C 85 130, 115 130, 125 125 C 150 110, 145 90, 128 45 Z',
     body: 'M 68 42 C 50 88, 46 112, 73 128 C 83 133, 117 133, 127 128 C 154 112, 150 88, 132 42 Z M 100 130 L 100 165 M 75 165 L 125 165',
+    highlight: 'M 76 50 C 65 88, 60 102, 80 118 C 73 110, 68 95, 76 50 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2,
@@ -89,6 +95,7 @@ const glasswareSpecs = {
   'Kupferbecher': {
     cavity: 'M 60 65 C 60 65, 55 145, 65 145 L 135 145 C 145 145, 140 65, 140 65 Z',
     body: 'M 56 60 C 56 60, 51 150, 65 150 L 135 150 C 149 150, 144 60, 144 60 Z M 58 75 C 30 75, 30 135, 58 135 C 40 135, 40 75, 58 75 Z',
+    highlight: 'M 62 68 C 62 68, 57 142, 67 142 L 75 142 C 67 142, 68 68, 68 68 Z',
     fill: 'url(/#copper-metallic)',
     stroke: 'none',
     strokeWidth: 0,
@@ -101,6 +108,7 @@ const glasswareSpecs = {
   'Tiki-Becher': {
     cavity: 'M 70 45 L 130 45 L 126 155 L 74 155 Z',
     body: 'M 66 40 L 134 40 L 130 162 L 70 162 Z',
+    highlight: 'M 72 48 L 78 48 L 80 152 L 74 152 Z',
     fill: 'url(/#tiki-ceramic)',
     stroke: 'none',
     strokeWidth: 0,
@@ -114,6 +122,7 @@ const glasswareSpecs = {
   'Tiki-Glas': {
     cavity: 'M 70 45 L 130 45 L 126 155 L 74 155 Z',
     body: 'M 66 40 L 134 40 L 130 162 L 70 162 Z',
+    highlight: 'M 72 48 L 78 48 L 80 152 L 74 152 Z',
     fill: 'url(/#tiki-ceramic)',
     stroke: 'none',
     strokeWidth: 0,
@@ -127,6 +136,7 @@ const glasswareSpecs = {
   'Weinglas': {
     cavity: 'M 65 50 C 65 50, 60 125, 100 132 C 140 125, 135 50, 135 50 Z',
     body: 'M 61 48 C 61 48, 56 128, 100 135 C 144 128, 139 48, 139 48 M 100 135 L 100 175 M 70 175 L 130 175',
+    highlight: 'M 69 52 C 69 52, 64 112, 100 118 C 85 114, 75 90, 75 52 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2,
@@ -139,6 +149,7 @@ const glasswareSpecs = {
   'Champagnerflötenglas': {
     cavity: 'M 80 40 L 120 40 C 120 40, 120 115, 100 125 C 80 115, 80 40, 80 40 Z',
     body: 'M 77 38 L 123 38 C 123 38, 123 118, 100 128 C 77 118, 77 38, 77 38 M 100 128 L 100 178 M 70 178 L 130 178',
+    highlight: 'M 83 42 C 83 42, 83 102, 100 110 C 90 102, 88 70, 88 42 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2,
@@ -151,6 +162,7 @@ const glasswareSpecs = {
   'Champagnerglas': {
     cavity: 'M 50 60 C 50 115, 150 115, 150 60 Z',
     body: 'M 46 58 C 46 120, 154 120, 154 58 M 100 118 L 100 175 M 65 175 L 135 175',
+    highlight: 'M 54 62 C 54 95, 78 112, 100 113 C 85 108, 65 92, 65 62 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2,
@@ -163,6 +175,7 @@ const glasswareSpecs = {
   'hitzefestes Glas': {
     cavity: 'M 70 50 L 130 50 L 125 145 L 75 145 Z',
     body: 'M 66 45 L 134 45 L 129 155 L 71 155 Z M 71 145 L 129 145 L 129 155 L 71 155 Z M 130 75 C 150 75, 150 125, 130 125',
+    highlight: 'M 73 53 L 80 53 L 82 142 L 75 142 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.2,
@@ -175,6 +188,7 @@ const glasswareSpecs = {
   'Tiki-Bowl': {
     cavity: 'M 45 75 C 45 135, 155 135, 155 75 Z',
     body: 'M 41 72 C 41 140, 159 140, 159 72 M 75 136 L 65 155 L 135 155 L 125 136',
+    highlight: 'M 49 78 C 49 110, 85 132, 100 133 C 80 128, 62 112, 62 78 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.5,
@@ -187,6 +201,7 @@ const glasswareSpecs = {
   'Shotglas': {
     cavity: 'M 78 70 L 122 70 L 118 150 L 82 150 Z',
     body: 'M 74 65 L 126 65 L 122 160 L 78 160 Z M 78 150 L 122 150 L 122 160 L 78 160 Z',
+    highlight: 'M 80 73 L 86 73 L 87 145 L 81 145 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.5,
@@ -199,6 +214,7 @@ const glasswareSpecs = {
   'kleines Glas': {
     cavity: 'M 75 70 L 125 70 L 120 150 L 80 150 Z',
     body: 'M 71 65 L 129 65 L 124 158 L 76 158 Z M 76 150 L 124 150 L 124 158 L 76 158 Z',
+    highlight: 'M 78 73 L 84 73 L 85 145 L 79 145 Z',
     fill: 'none',
     stroke: 'rgba(255, 255, 255, 0.15)',
     strokeWidth: 2.5,
@@ -1037,9 +1053,41 @@ function getMinimalSVG(cocktail) {
   const liquidIngredients = cocktail.ingredients.filter(i => i.role === 'ingredient' && i.amount.value_ml > 0);
   const mainColor = liquidIngredients.length > 0 ? getIngredientColor(liquidIngredients[0].name) : 'rgba(212, 175, 55, 0.4)';
   
-  // Generate a random ID suffix to ensure uniqueness in the DOM (collides with duplicate card instances)
+  // Generate a random ID suffix to ensure uniqueness in the DOM
   const rand = Math.random().toString(36).substr(2, 5);
   const uniqueId = `glass-mini-clip-${cocktail.id}-${rand}`;
+  
+  // Check if it has ice and straw
+  const hasIce = ['Rocks-Glas', 'Highball-Glas', 'Collins-Glas', 'Kupferbecher', 'Tiki-Becher', 'Tiki-Glas', 'hitzefestes Glas'].includes(glassName);
+  const hasStraw = ['Highball-Glas', 'Collins-Glas', 'Kupferbecher', 'Tiki-Becher', 'Tiki-Glas'].includes(glassName);
+  
+  let iceHtml = '';
+  if (hasIce) {
+    const cavityHeight = spec.yMax - spec.yMin;
+    const yMid = spec.yMin + cavityHeight * 0.5;
+    const yLow = spec.yMin + cavityHeight * 0.75;
+    iceHtml = `
+      <rect x="76" y="${yLow - 12}" width="24" height="24" rx="4" ry="4" fill="rgba(255, 255, 255, 0.12)" stroke="rgba(255, 255, 255, 0.3)" stroke-width="0.8" transform="rotate(15, 88, ${yLow})"/>
+      <rect x="94" y="${yMid - 10}" width="20" height="20" rx="4" ry="4" fill="rgba(255, 255, 255, 0.12)" stroke="rgba(255, 255, 255, 0.3)" stroke-width="0.8" transform="rotate(-25, 104, ${yMid})"/>
+    `;
+  }
+  
+  let strawHtml = '';
+  if (hasStraw) {
+    const strawTopX = spec.rimRight - 10;
+    const strawTopY = spec.rimY - 30;
+    const strawBotX = spec.rimLeft + 20;
+    const strawBotY = spec.yMax - 10;
+    strawHtml = `
+      <line x1="${strawBotX}" y1="${strawBotY}" x2="${strawTopX}" y2="${strawTopY}" stroke="var(--accent-color)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="${strawBotX}" y1="${strawBotY}" x2="${strawTopX}" y2="${strawTopY}" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="3 4" stroke-linecap="round" opacity="0.8"/>
+    `;
+  }
+  
+  let highlightHtml = '';
+  if (spec.highlight) {
+    highlightHtml = `<path d="${spec.highlight}" fill="rgba(255, 255, 255, 0.08)" pointer-events="none" />`;
+  }
   
   return `
     <svg viewBox="0 0 200 200" width="100%" height="100%">
@@ -1052,9 +1100,12 @@ function getMinimalSVG(cocktail) {
       <g clip-path="url(/#${uniqueId})">
         <rect x="0" y="0" width="200" height="200" fill="rgba(255,255,255,0.03)"/>
         <rect x="0" y="${spec.yMin + (spec.yMax - spec.yMin)*0.25}" width="200" height="200" fill="${mainColor}"/>
+        ${iceHtml}
       </g>
+      ${strawHtml}
       <!-- Glass outline -->
       <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+      ${highlightHtml}
       <path d="${spec.body}" fill="${spec.fill}" stroke="${spec.stroke}" stroke-width="${spec.strokeWidth}"/>
     </svg>
   `;
@@ -1105,7 +1156,7 @@ function drawGlasswareSVG(cocktail) {
       currentY = layerY;
     });
 
-    // Check for fizzness (Prosecco, soda, tonic, champagne, sparkling, ginger beer)
+    // Check for fizzness
     const isFizzy = cocktail.ingredients.some(i => {
       const name = i.name.toLowerCase();
       return name.includes("soda") || name.includes("tonic") || name.includes("prosecco") || 
@@ -1114,15 +1165,16 @@ function drawGlasswareSVG(cocktail) {
     });
 
     if (isFizzy) {
-      // Add animated sparkles
+      const bY = spec.yMax;
       sparklesHtml = `
-        <circle class="sparkle" cx="80" cy="110" r="1.5" />
-        <circle class="sparkle" cx="120" cy="120" r="2.2" />
-        <circle class="sparkle" cx="100" cy="130" r="1.8" />
-        <circle class="sparkle" cx="90" cy="90" r="2" />
-        <circle class="sparkle" cx="115" cy="100" r="1.2" />
-        <circle class="sparkle" cx="70" cy="125" r="1.5" />
-        <circle class="sparkle" cx="130" cy="135" r="1.8" />
+        <!-- Fizzy Bubbles starting near bottom -->
+        <circle class="sparkle" cx="82" cy="${bY - 15}" r="1.5" />
+        <circle class="sparkle" cx="118" cy="${bY - 25}" r="2.2" />
+        <circle class="sparkle" cx="100" cy="${bY - 20}" r="1.8" />
+        <circle class="sparkle" cx="90" cy="${bY - 35}" r="2" />
+        <circle class="sparkle" cx="110" cy="${bY - 10}" r="1.2" />
+        <circle class="sparkle" cx="76" cy="${bY - 30}" r="1.6" />
+        <circle class="sparkle" cx="124" cy="${bY - 18}" r="1.8" />
       `;
     }
   }
@@ -1195,9 +1247,51 @@ function drawGlasswareSVG(cocktail) {
     }
   });
 
-  // 4. Assemble the whole SVG code
-  const isTiki = spec.isTiki;
+  // 4. Determine ice, straw, and custom highlight overlays
+  let iceCubesHtml = '';
+  const hasIce = ['Rocks-Glas', 'Highball-Glas', 'Collins-Glas', 'Kupferbecher', 'Tiki-Becher', 'Tiki-Glas', 'hitzefestes Glas'].includes(glassName);
   
+  if (hasIce && totalVolume > 0) {
+    const cavityHeight = spec.yMax - spec.yMin;
+    const yMid = spec.yMin + cavityHeight * 0.5;
+    const yLow = spec.yMin + cavityHeight * 0.75;
+    const yHigh = spec.yMin + cavityHeight * 0.28;
+    
+    iceCubesHtml = `
+      <!-- Luxury Floating Ice Cubes -->
+      <g opacity="0.85">
+        <rect x="74" y="${yLow - 15}" width="32" height="32" rx="6" ry="6" fill="rgba(255, 255, 255, 0.12)" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.2" transform="rotate(15, 90, ${yLow})"/>
+        <rect x="94" y="${yMid - 14}" width="28" height="28" rx="5" ry="5" fill="rgba(255, 255, 255, 0.12)" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.2" transform="rotate(-25, 108, ${yMid})"/>
+        <rect x="68" y="${yHigh - 10}" width="26" height="26" rx="5" ry="5" fill="rgba(255, 255, 255, 0.15)" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1.2" transform="rotate(40, 81, ${yHigh})"/>
+      </g>
+    `;
+  }
+
+  let strawHtml = '';
+  const hasStraw = ['Highball-Glas', 'Collins-Glas', 'Kupferbecher', 'Tiki-Becher', 'Tiki-Glas'].includes(glassName);
+  
+  if (hasStraw) {
+    const strawTopX = spec.rimRight - 10;
+    const strawTopY = spec.rimY - 45;
+    const strawBotX = spec.rimLeft + 20;
+    const strawBotY = spec.yMax - 10;
+    
+    strawHtml = `
+      <!-- Premium Paper Straw -->
+      <g>
+        <line x1="${strawBotX}" y1="${strawBotY}" x2="${strawTopX}" y2="${strawTopY}" stroke="var(--accent-color)" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="${strawBotX}" y1="${strawBotY}" x2="${strawTopX}" y2="${strawTopY}" stroke="#ffffff" stroke-width="4.5" stroke-dasharray="4 6" stroke-linecap="round" opacity="0.8"/>
+      </g>
+    `;
+  }
+
+  let highlightHtml = '';
+  if (spec.highlight) {
+    highlightHtml = `<path d="${spec.highlight}" fill="rgba(255, 255, 255, 0.12)" pointer-events="none" />`;
+  }
+
+  // 5. Assemble the whole SVG code
+  const isTiki = spec.isTiki;
   const detailClipId = `detail-glass-clip-${cocktail.id}`;
 
   let svgCode = `
@@ -1217,12 +1311,21 @@ function drawGlasswareSVG(cocktail) {
         <!-- Stacked ingredients liquid layers -->
         ${layersHtml}
         
+        <!-- Ice cubes inside liquid -->
+        ${iceCubesHtml}
+        
         <!-- Sparkles/fizzy bubbles -->
         ${sparklesHtml}
       </g>
       
+      <!-- Premium Straw -->
+      ${strawHtml}
+      
       <!-- Shiny highlights inside glass bowl using absolute global gradient -->
       <path d="${spec.cavity}" fill="url(/#shine-overlay)" opacity="0.8"/>
+      
+      <!-- Custom glossy highlight paths -->
+      ${highlightHtml}
 
       <!-- Inner glass cavity stroke outline -->
       <path d="${spec.cavity}" fill="none" stroke="rgba(255, 255, 255, 0.12)" stroke-width="2" />
