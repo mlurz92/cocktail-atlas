@@ -14,12 +14,6 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --card-shadow: 0 10px 30px -10px var(--shadow-color);
   --nav-shadow: 0 -5px 25px -5px var(--shadow-color);
-  /* True viewport height in px, kept in sync by app.js (window.innerHeight).
-     iOS standalone PWAs report an incorrect value for 100dvh on cold start
-     (a documented WebKit bug), which leaves a gap the size of the home
-     indicator area beneath fixed-height shells. Falls back to 100dvh until
-     JS runs, and for non-JS contexts. */
-  --app-height: 100dvh;
 }
 
 /* Theme 1: Dark Mode (Default) - Charcoal Dark & Gold */
@@ -92,14 +86,10 @@
 }
 
 html {
-  /* The definitive iOS PWA standalone bottom-gap fix: 100dvh alone is
-     unreliable in standalone/home-screen mode (a documented WebKit cold-start
-     bug where it under-reports height, leaving a gap the size of the home
-     indicator). --app-height is kept in sync with window.innerHeight by
-     app.js, which is accurate in standalone mode since there is no browser
-     chrome to account for. */
-  height: 100vh;
-  height: var(--app-height);
+  /* Height here is largely cosmetic: .app-container (below) is what actually
+     anchors to the true screen edges, and fully occludes html/body. Kept
+     sane mainly to avoid rubber-band overscroll of an empty page. */
+  height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -110,9 +100,7 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  /* Match html height to ensure full stretch on all browsers */
-  height: 100vh;
-  height: var(--app-height);
+  height: 100%;
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -149,13 +137,21 @@ a {
 .app-container {
   display: flex;
   flex-direction: column;
-  /* Stretch to fill the full visual viewport on iOS standalone mode.
-     See --app-height definition in :root for why 100dvh alone is not enough. */
-  height: 100vh;
-  height: var(--app-height);
+  /* THE fix for the iOS standalone-PWA bottom gap. Height-unit approaches
+     (100vh, 100dvh, -webkit-fill-available) and window.innerHeight have all
+     been reported to under-report the available height specifically in
+     iOS "Add to Home Screen" standalone mode, leaving a gap the size of the
+     home-indicator safe area beneath the shell — this is what caused the
+     gap to persist through an earlier attempt at this fix. position:fixed
+     with inset:0 sidesteps the problem entirely: it anchors directly to the
+     true edges of the initial containing block, which viewport-fit=cover
+     (see the viewport meta tag) expands to the full physical screen,
+     including the area behind the home indicator. No height computation of
+     any kind is involved, so there is nothing for iOS to get wrong. */
+  position: fixed;
+  inset: 0;
   max-width: 480px; /* Centered mobile container */
   margin: 0 auto;
-  position: relative;
   overflow: hidden;
   background-color: var(--bg-primary);
   border-left: 1px solid var(--border-color);
@@ -165,12 +161,12 @@ a {
 }
 
 @media (min-width: 768px) {
-  /* For tablets and foldables, expand to full viewport for maximum usability */
+  /* For tablets and foldables, expand to full viewport for maximum usability.
+     Still position:fixed + inset:0 (inherited from the base rule) — tablets
+     in standalone mode can have the exact same home-indicator gap issue. */
   .app-container {
     max-width: 100%;
     width: 100%;
-    height: 100vh;
-    height: var(--app-height);
     margin: 0;
     border-radius: 0;
     border-left: none;
@@ -180,8 +176,12 @@ a {
 }
 
 @media (min-width: 1150px) {
-  /* On medium desktops, center as a noble floating card application */
+  /* On medium desktops, center as a noble floating card application. This is
+     no longer a full-bleed mobile/standalone shell, so switch back to normal
+     document flow (position:fixed + inset:0 would otherwise pin it to the
+     browser window edges and ignore the centering margin below). */
   .app-container {
+    position: relative;
     max-width: 1220px;
     width: 100%;
     height: 92vh;
